@@ -18,9 +18,10 @@ All other live cells die in the next generation. Similarly, all other dead cells
 
 /*
 Implementation:
-1. Store initial life
-2. Get all neighbors for each life form
-3. 
+- Store initial life
+- Get all neighbors for each life form
+- If the life form 
+- If the life form friend count = 2 or 3, no change.
 */
 let initial = [
     new Life(0,0,2),
