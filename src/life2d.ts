@@ -31,8 +31,16 @@ Implementation:
     - else die
 */
 
+let space = 20;
+let width = 9;
+let size = 100;
+
+let max = size * space;
+
+canvas.width = max;
+canvas.height = max;
+
 function createGrid(){
-    let size = 100;
     let grid: number[][] = []
     for(let i = 0;i < size;i++){
         let row: number[] = []
@@ -132,9 +140,7 @@ let context = canvas.getContext('2d');
 //context.fillStyle = "color: #ffffff";
 //context.fillRect(0,0,100,100);
 function draw(grid: number[][]){
-    let space = 20;
-    let width = 9;
-
+   
     for(let i = 0;i < grid.length;i++){
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
