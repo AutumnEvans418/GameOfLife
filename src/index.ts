@@ -1,1 +1,1 @@
-require('./life2d');
+require('./canvasUI');

@@ -1,19 +1,3 @@
-// Get the canvas DOM element
-let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
-
-class State {
-    x: number;
-    y: number;
-    neighbors: number;
-    alive: boolean;
-    constructor(x: number, y:number, n:number, alive: boolean){
-        this.x = x;
-        this.y = y;
-        this.neighbors = n;
-        this.alive = alive;
-    }
-}
-
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
 2. Any dead cell with three live neighbors becomes a live cell.
@@ -31,33 +15,26 @@ Implementation:
     - else die
 */
 
-let space = 50;
-let width = 49;
-let size = 10;
+export let settings = {
+    space: 50,
+    width: 49,
+    size: 20
+}
 
-let max = size * space;
+export function max(){
+    return settings.size * settings.space
+}
 
-canvas.width = max;
-canvas.height = max;
-
-function createGrid(){
+export function createGrid(){
     let grid: number[][] = []
-    for(let i = 0;i < size;i++){
+    for(let i = 0;i < settings.size;i++){
         let row: number[] = []
-        for(let j = 0;j < size;j++){
+        for(let j = 0;j < settings.size;j++){
             row.push(0);
         }
         grid.push(row);
     }
     return grid;
-}
-
-function setState(grid: number[][]){
-    grid[1][5] = 1;
-    grid[2][5] = 1;
-    grid[3][5] = 1;
-    grid[4][5] = 1;
-    grid[5][5] = 1;
 }
 
 function log(str: any){
@@ -140,7 +117,7 @@ function getGridNeighbors(grid: number[][]){
     return result;
 }
 
-function nextGen(grid: number[][]){
+export function nextGen(grid: number[][]){
     let ns = getGridNeighbors(grid);
     for(let i = 0;i < ns.length;i++){
         for(let j = 0;j < ns[i].length;j++){
@@ -167,72 +144,3 @@ function nextGen(grid: number[][]){
     }
 
 }
-let context = canvas.getContext('2d');
-
-//context.fillStyle = "color: #ffffff";
-//context.fillRect(0,0,100,100);
-function draw(grid: number[][]){
-    context.clearRect(0,0,max,max);
-    for(let i = 0;i < grid.length;i++){
-        for(let j = 0;j < grid[i].length;j++){
-            let current = grid[i][j];
-            if(current == 1){
-                context.fillStyle = "black";
-            }
-            else{
-                context.fillStyle = "lightgray";
-            }
-            context.fillRect(i*space,j*space,width,width);
-        }
-    }
-}
-
-let grid = createGrid();
-//setState(grid);
-draw(grid);
-log(grid);
-
-let start = document.getElementById('start');
-let reset = document.getElementById('reset');
-let pause = document.getElementById('pause');
-
-let sizeSlider = document.getElementById('size') as HTMLInputElement;
-let isRunning = false;
-function repeat(){
-    nextGen(grid);
-    draw(grid);
-    if(isRunning){
-        setTimeout(repeat, 100);
-    }
-}
-pause.onclick = () => {
-    isRunning = false;
-
-}
-start.onclick = () => {
-    isRunning = true;
-    repeat();
-}
-reset.onclick = () => {
-    isRunning = false;
-    grid = createGrid();
-}
-sizeSlider.onchange = e => {
-    space = Number.parseInt(sizeSlider.value);
-    width = space * 0.9;
-    console.log('change')
-    draw(grid)
-}
-canvas.onclick = e => {
-    let x = Math.floor(e.x / space);
-    let y = Math.floor(e.y / space);
-    let current = grid[x][y];
-    let result = 0;
-    if(current == 0){
-        result = 1;
-    }
-    grid[x][y] = result;
-    draw(grid)
-}
-//nextGen(grid);
-//draw(grid);
