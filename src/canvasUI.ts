@@ -1,8 +1,15 @@
-import {max, settings, createGrid, nextGen } from './life2d'
+import {max, settings, createGrid, nextGen, setExample, gameExamples } from './life2d'
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
-canvas.width = max();
-canvas.height = max();
+
+
+function resizeCanvas(){
+    canvas.width = max();
+    canvas.height = max();
+}
+
+resizeCanvas();
+
 let context = canvas.getContext('2d');
 
 let grid = createGrid();
@@ -30,34 +37,74 @@ let start = document.getElementById('start');
 let reset = document.getElementById('reset');
 let pause = document.getElementById('pause');
 
-let sizeSlider = document.getElementById('size') as HTMLInputElement;
+let examples = document.getElementById('examples') as HTMLSelectElement;
+
+gameExamples.forEach(p => {
+    examples.innerHTML += `<option>${p.name}</option>`
+})
+
+examples.onchange = e => {
+    resetGrid()
+    setExample(grid, examples.value)
+    startGame()
+}
+
+let delayInput = document.getElementById('delay') as HTMLInputElement;
+let delay = 100;
+delayInput.onchange = e => {
+    delay = Number.parseInt(delayInput.value)
+}
+
+let zoomSlider = document.getElementById('zoom') as HTMLInputElement;
+zoomSlider.onchange = e => {
+
+    settings.space = Number.parseInt(zoomSlider.value);
+    settings.width = settings.space * 0.9;
+    console.log('change')
+    resizeCanvas()
+    draw(grid)
+}
+let size = document.getElementById('size') as HTMLInputElement;
+
+size.onchange = () => {
+    settings.size = Number.parseInt(size.value)
+    resizeCanvas()
+    grid = createGrid()
+    draw(grid)
+}
+
 let isRunning = false;
 function repeat(){
     nextGen(grid);
     draw(grid);
     if(isRunning){
-        setTimeout(repeat, 100);
+        setTimeout(repeat, delay);
     }
 }
 pause.onclick = () => {
     isRunning = false;
 
 }
-start.onclick = () => {
+
+function startGame(){
     isRunning = true;
     repeat();
 }
-reset.onclick = () => {
+
+start.onclick = () => {
+    startGame();
+}
+
+function resetGrid(){
     isRunning = false;
     grid = createGrid();
-}
-sizeSlider.onchange = e => {
-
-    settings.space = Number.parseInt(sizeSlider.value);
-    settings.width = settings.space * 0.9;
-    console.log('change')
     draw(grid)
 }
+
+reset.onclick = () => {
+    resetGrid()
+}
+
 
 
 canvas.onclick = e => {

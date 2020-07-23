@@ -15,10 +15,41 @@ Implementation:
     - else die
 */
 
+interface IExample {
+    name: string
+    data: number[][]
+}
+
+let blinker = {
+    name: 'blinker',
+    data: [
+        [0,0,0],
+        [1,1,1],
+        [0,0,0]
+    ]
+}
+
+let toad = {
+    name: 'toad',
+    data: [
+        [0,0,0,0],
+        [0,1,1,1],
+        [1,1,1,0],
+        [0,0,0,0]
+    ]
+}
+
+export let gameExamples = [
+    blinker,
+    toad
+]
+
+
+
 export let settings = {
     space: 50,
     width: 49,
-    size: 20
+    size: 20,
 }
 
 export function max(){
@@ -35,6 +66,19 @@ export function createGrid(){
         grid.push(row);
     }
     return grid;
+}
+
+export function setExample(grid: number[][], example: string){
+    let ex = gameExamples.find(p => p.name == example)
+    if(ex && grid.length > ex.data.length && grid[0].length > ex.data[0].length){
+        let data = ex.data
+
+        for(let i = 0;i < data.length;i++){
+            for(let j = 0;j < data[i].length;j++){
+                grid[i][j] = data[i][j]
+            }
+        }
+    }   
 }
 
 function log(str: any){
