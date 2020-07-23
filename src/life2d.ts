@@ -34,7 +34,6 @@ Implementation:
 let space = 50;
 let width = 49;
 let size = 10;
-let hasBoundary = false;
 
 let max = size * space;
 
@@ -64,11 +63,15 @@ function setState(grid: number[][]){
 function log(str: any){
     //console.log(str);
 }
+let hasBoundary = false;
 
 function getNeighbors(grid: number[][], x: number, y: number){
     let n: number[] = []
     for(let i = x-1;i <= x+1;i++){
         for(let j = y-1;j <= y+1;j++){
+            let xR = i;
+            let yR = j;
+
             if(i == x && j == y){
                 continue;
             }
@@ -77,7 +80,24 @@ function getNeighbors(grid: number[][], x: number, y: number){
                     continue;
                 }
                 else {
-                    i = grid.length-1;
+                    xR = grid.length-1;
+                }
+            }
+            else if(i == grid.length ){
+                if(hasBoundary){
+                    continue;
+                }
+                else{
+                    xR = 0;
+                }
+            }
+
+            if(grid[xR].length == j){
+                if(hasBoundary){
+                    continue;
+                }
+                else {
+                    yR = 0;
                 }
             }
             else if(j < 0){
@@ -85,29 +105,12 @@ function getNeighbors(grid: number[][], x: number, y: number){
                     continue
                 }
                 else {
-                    j = grid[0].length-1;
-                }
-            }
-
-            if(i == grid.length ){
-                if(hasBoundary){
-                    continue;
-                }
-                else{
-                    i = 0;
-                }
-            }
-            else if(grid[i].length == j){
-                if(hasBoundary){
-                    continue;
-                }
-                else {
-                    j = 0;
+                    yR = grid[0].length-1;
                 }
             }
             //log(`${i},${j}`);
-            n.push(grid[i][j])
-            console.log('called')
+            n.push(grid[xR][yR])
+            log('called')
         }
     }
     return n;
@@ -123,12 +126,12 @@ function getGridNeighbors(grid: number[][]){
         let row: teststate[] = []
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
-
+            log('getting neighbors')
             let n = getNeighbors(grid, i, j);
             let count = n.filter(p => p == 1).length;
             let msg = `${i},${j}: `;
-            //log(msg + `count = ${count}`);
-            //log(n)
+            log(msg + `count = ${count}`);
+            log(n)
             row.push({state: current, nCount: count});
         }
 
