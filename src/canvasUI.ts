@@ -59,9 +59,6 @@ sizeSlider.onchange = e => {
     draw(grid)
 }
 
-let con = document.getElementById('container')
-
-
 
 canvas.onclick = e => {
 
