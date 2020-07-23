@@ -31,9 +31,10 @@ Implementation:
     - else die
 */
 
-let space = 20;
-let width = 9;
-let size = 100;
+let space = 50;
+let width = 49;
+let size = 10;
+let hasBoundary = false;
 
 let max = size * space;
 
@@ -71,14 +72,42 @@ function getNeighbors(grid: number[][], x: number, y: number){
             if(i == x && j == y){
                 continue;
             }
-            if(i < 0 || j < 0){
-                continue;
+            if(i < 0 ){
+                if(hasBoundary){
+                    continue;
+                }
+                else {
+                    i = grid.length-1;
+                }
             }
-            if(i == grid.length || grid[i].length == j){
-                continue;
+            else if(j < 0){
+                if(hasBoundary){
+                    continue
+                }
+                else {
+                    j = grid[0].length-1;
+                }
+            }
+
+            if(i == grid.length ){
+                if(hasBoundary){
+                    continue;
+                }
+                else{
+                    i = 0;
+                }
+            }
+            else if(grid[i].length == j){
+                if(hasBoundary){
+                    continue;
+                }
+                else {
+                    j = 0;
+                }
             }
             //log(`${i},${j}`);
             n.push(grid[i][j])
+            console.log('called')
         }
     }
     return n;
@@ -140,7 +169,7 @@ let context = canvas.getContext('2d');
 //context.fillStyle = "color: #ffffff";
 //context.fillRect(0,0,100,100);
 function draw(grid: number[][]){
-   
+    context.clearRect(0,0,max,max);
     for(let i = 0;i < grid.length;i++){
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
@@ -156,17 +185,51 @@ function draw(grid: number[][]){
 }
 
 let grid = createGrid();
-setState(grid);
+//setState(grid);
+draw(grid);
 log(grid);
 
+let start = document.getElementById('start');
+let reset = document.getElementById('reset');
+let pause = document.getElementById('pause');
 
-
+let sizeSlider = document.getElementById('size') as HTMLInputElement;
+let isRunning = false;
 function repeat(){
     nextGen(grid);
     draw(grid);
-    setTimeout(repeat, 100);
+    if(isRunning){
+        setTimeout(repeat, 100);
+    }
 }
-repeat();
+pause.onclick = () => {
+    isRunning = false;
 
+}
+start.onclick = () => {
+    isRunning = true;
+    repeat();
+}
+reset.onclick = () => {
+    isRunning = false;
+    grid = createGrid();
+}
+sizeSlider.onchange = e => {
+    space = Number.parseInt(sizeSlider.value);
+    width = space * 0.9;
+    console.log('change')
+    draw(grid)
+}
+canvas.onclick = e => {
+    let x = Math.floor(e.x / space);
+    let y = Math.floor(e.y / space);
+    let current = grid[x][y];
+    let result = 0;
+    if(current == 0){
+        result = 1;
+    }
+    grid[x][y] = result;
+    draw(grid)
+}
 //nextGen(grid);
 //draw(grid);
