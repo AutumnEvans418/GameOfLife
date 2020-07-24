@@ -1,4 +1,5 @@
-import {max, settings, createGrid, nextGen, setExample, gameExamples } from './life2d'
+import {max, settings, createGrid, nextGen, setExample, } from './life2d'
+import { gameExamples } from './2d/examples'
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 
@@ -37,6 +38,14 @@ let start = document.getElementById('start');
 let reset = document.getElementById('reset');
 let pause = document.getElementById('pause');
 
+let boundary = document.getElementById('boundary') as HTMLInputElement;
+
+boundary.checked = settings.hasBoundary
+
+boundary.onchange = () => {
+    settings.hasBoundary = boundary.checked
+}
+
 let examples = document.getElementById('examples') as HTMLSelectElement;
 
 gameExamples.forEach(p => {
@@ -46,7 +55,8 @@ gameExamples.forEach(p => {
 examples.onchange = e => {
     resetGrid()
     setExample(grid, examples.value)
-    startGame()
+    draw(grid)
+    //startGame()
 }
 
 let delayInput = document.getElementById('delay') as HTMLInputElement;
@@ -74,11 +84,14 @@ size.onchange = () => {
 }
 
 let isRunning = false;
+
+let currentTimeout: NodeJS.Timeout
+
 function repeat(){
     nextGen(grid);
     draw(grid);
     if(isRunning){
-        setTimeout(repeat, delay);
+       currentTimeout = setTimeout(repeat, delay);
     }
 }
 pause.onclick = () => {
@@ -99,6 +112,7 @@ function resetGrid(){
     isRunning = false;
     grid = createGrid();
     draw(grid)
+    clearTimeout(currentTimeout)
 }
 
 reset.onclick = () => {

@@ -20,15 +20,17 @@
 
             <button id="reset">Reset</button>
             <label>Zoom</label>
-            <input id="zoom" type="range" min="1" max="50" value="40">
+            <input id="zoom" type="range" min="1" max="50" value="25">
             <label>Size</label>
-            <input id="size" type="number" min="1" max="100" value="20">
+            <input id="size" type="number" min="1" max="100" value="40">
             <label>Delay</label>
             <input id="delay" type="range" min="10" max="1000" value="100">
             <label>Examples</label>
             <select id="examples">
-                
+                <option selected></option>
             </select>
+            <label>Has Boundary</label>
+            <input type="checkbox" checked="true" id="boundary">
         </div>
         <script src="main.js"></script>
     </body>

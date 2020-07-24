@@ -1,3 +1,5 @@
+import { gameExamples } from './2d/examples'
+
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
 2. Any dead cell with three live neighbors becomes a live cell.
@@ -15,41 +17,13 @@ Implementation:
     - else die
 */
 
-interface IExample {
-    name: string
-    data: number[][]
-}
-
-let blinker = {
-    name: 'blinker',
-    data: [
-        [0,0,0],
-        [1,1,1],
-        [0,0,0]
-    ]
-}
-
-let toad = {
-    name: 'toad',
-    data: [
-        [0,0,0,0],
-        [0,1,1,1],
-        [1,1,1,0],
-        [0,0,0,0]
-    ]
-}
-
-export let gameExamples = [
-    blinker,
-    toad
-]
-
 
 
 export let settings = {
-    space: 50,
-    width: 49,
-    size: 20,
+    space: 25,
+    width: 24,
+    size: 40,
+    hasBoundary: true,
 }
 
 export function max(){
@@ -75,7 +49,7 @@ export function setExample(grid: number[][], example: string){
 
         for(let i = 0;i < data.length;i++){
             for(let j = 0;j < data[i].length;j++){
-                grid[i][j] = data[i][j]
+                grid[j][i] = data[i][j]
             }
         }
     }   
@@ -84,7 +58,6 @@ export function setExample(grid: number[][], example: string){
 function log(str: any){
     //console.log(str);
 }
-let hasBoundary = false;
 
 function getNeighbors(grid: number[][], x: number, y: number){
     let n: number[] = []
@@ -97,7 +70,7 @@ function getNeighbors(grid: number[][], x: number, y: number){
                 continue;
             }
             if(i < 0 ){
-                if(hasBoundary){
+                if(settings.hasBoundary){
                     continue;
                 }
                 else {
@@ -105,7 +78,7 @@ function getNeighbors(grid: number[][], x: number, y: number){
                 }
             }
             else if(i == grid.length ){
-                if(hasBoundary){
+                if(settings.hasBoundary){
                     continue;
                 }
                 else{
@@ -114,7 +87,7 @@ function getNeighbors(grid: number[][], x: number, y: number){
             }
 
             if(grid[xR].length == j){
-                if(hasBoundary){
+                if(settings.hasBoundary){
                     continue;
                 }
                 else {
@@ -122,7 +95,7 @@ function getNeighbors(grid: number[][], x: number, y: number){
                 }
             }
             else if(j < 0){
-                if(hasBoundary){
+                if(settings.hasBoundary){
                     continue
                 }
                 else {
