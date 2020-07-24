@@ -2,8 +2,12 @@ import 'phaser'
 import { MainScene } from './MainScene';
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    scale: {
+        mode: Phaser.Scale.RESIZE,
+        parent: 'parent',
+        width: '100%',
+        height: '100%'
+    },
     // physics: {
     //     default: 'arcade',
     //     arcade: {
