@@ -3,7 +3,8 @@ const path = require('path');
 module.exports = {
   entry: { 
     index: './src/index.ts',
-    canvas: './src/canvasUI.ts'
+    canvas: './src/canvasUI.ts',
+    phaser: './src/phaser/phaser.ts'
   },
   module: {
     rules: [
