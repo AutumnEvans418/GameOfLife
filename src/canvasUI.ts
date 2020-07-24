@@ -1,4 +1,4 @@
-import {max, settings, createGrid, nextGen, setExample, } from './life2d'
+import {max, settings, createGrid, nextGen, setExample, ICell, } from './life2d'
 import { gameExamples } from './2d/examples'
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
@@ -16,15 +16,15 @@ let context = canvas.getContext('2d');
 let grid = createGrid();
 
 
-function draw(grid: number[][]){
+function draw(grid: ICell[][]){
     context.clearRect(0,0,canvas.width,canvas.height);
     let space = settings.space;
     let width = settings.width;
     for(let i = 0;i < grid.length;i++){
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
-            if(current == 1){
-                context.fillStyle = "black";
+            if(current.value == 1){
+                context.fillStyle = `rgb(0,0,0)`;
             }
             else{
                 context.fillStyle = "lightgray";
@@ -130,10 +130,10 @@ canvas.onclick = e => {
     let y = Math.floor((e.clientY - rect.top) / settings.space);
     let current = grid[x][y];
     let result = 0;
-    if(current == 0){
+    if(current.value == 0){
         result = 1;
     }
-    grid[x][y] = result;
+    grid[x][y].value = result;
     draw(grid)
 }
 draw(grid);

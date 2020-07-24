@@ -1,4 +1,5 @@
 import { gameExamples } from './2d/examples'
+import { IcoSphereBuilder } from 'babylonjs'
 
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
@@ -17,6 +18,11 @@ Implementation:
     - else die
 */
 
+export interface ICell {
+    value: number,
+    friends: number,
+}
+
 
 
 export let settings = {
@@ -31,25 +37,25 @@ export function max(){
 }
 
 export function createGrid(){
-    let grid: number[][] = []
+    let grid: ICell[][] = []
     for(let i = 0;i < settings.size;i++){
-        let row: number[] = []
+        let row: ICell[] = []
         for(let j = 0;j < settings.size;j++){
-            row.push(0);
+            row.push({ value: 0, friends: 0 });
         }
         grid.push(row);
     }
     return grid;
 }
 
-export function setExample(grid: number[][], example: string){
+export function setExample(grid: ICell[][], example: string){
     let ex = gameExamples.find(p => p.name == example)
     if(ex && grid.length > ex.data.length && grid[0].length > ex.data[0].length){
         let data = ex.data
 
         for(let i = 0;i < data.length;i++){
             for(let j = 0;j < data[i].length;j++){
-                grid[j][i] = data[i][j]
+                grid[j][i].value = data[i][j]
             }
         }
     }   
@@ -59,8 +65,8 @@ function log(str: any){
     //console.log(str);
 }
 
-function getNeighbors(grid: number[][], x: number, y: number){
-    let n: number[] = []
+function getNeighbors(grid: ICell[][], x: number, y: number){
+    let n: ICell[] = []
     for(let i = x-1;i <= x+1;i++){
         for(let j = y-1;j <= y+1;j++){
             let xR = i;
@@ -109,38 +115,37 @@ function getNeighbors(grid: number[][], x: number, y: number){
     }
     return n;
 }
-interface teststate{
-    state: number
-    nCount: number
-}
-function getGridNeighbors(grid: number[][]){
-    let result: teststate[][] = [];
+
+function getGridNeighbors(grid: ICell[][]){
+    //let result: teststate[][] = [];
     for(let i = 0;i < grid.length;i++){
 
-        let row: teststate[] = []
+        //let row: teststate[] = []
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
             log('getting neighbors')
             let n = getNeighbors(grid, i, j);
-            let count = n.filter(p => p == 1).length;
+            let count = n.filter(p => p.value == 1).length;
             let msg = `${i},${j}: `;
             log(msg + `count = ${count}`);
             log(n)
-            row.push({state: current, nCount: count});
+
+            grid[i][j].friends = count;
+            //row.push({state: current, nCount: count});
         }
 
-        result.push(row);
+        //result.push(row);
     }
-    return result;
+    //return result;
 }
 
-export function nextGen(grid: number[][]){
-    let ns = getGridNeighbors(grid);
-    for(let i = 0;i < ns.length;i++){
-        for(let j = 0;j < ns[i].length;j++){
-            let currentState = ns[i][j];
-            let current = currentState.state;
-            let count = currentState.nCount;
+export function nextGen(grid: ICell[][]){
+    getGridNeighbors(grid);
+    for(let i = 0;i < grid.length;i++){
+        for(let j = 0;j < grid[i].length;j++){
+            let currentState = grid[i][j];
+            let current = currentState.value;
+            let count = currentState.friends;
             let msg = `${i},${j}: `;
 
             //1. Any live cell with 2 or 3 live neighbors survives.
@@ -149,12 +154,12 @@ export function nextGen(grid: number[][]){
             }
             //2. Any dead cell with three live neighbors becomes a live cell.
             else if(current == 0 && count == 3){
-                grid[i][j] = 1;
+                grid[i][j].value = 1;
                 log(msg + "came alive")
             }
             //3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
             else if(current == 1){
-                grid[i][j] = 0;
+                grid[i][j].value = 0;
                 log(msg + "dead")
             }
         }
