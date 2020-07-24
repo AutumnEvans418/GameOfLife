@@ -1,30 +1,7 @@
 import {max, settings, createGrid, nextGen, setExample, ICell, } from '../life2d'
 import { gameExamples } from '../2d/examples'
 import { Tilemaps } from 'phaser';
-
-class CellImage {
-    image: Phaser.GameObjects.Image;
-    scene: Phaser.Scene;
-    delay: number;
-    setState(on: boolean) {
-        if(on) {
-            this.tween(1.2, 1)
-        }
-        else{
-            this.tween(0,0)
-        }
-        
-    }
-    tween(scale: number, opacity: number) {
-        this.scene.add.tween({
-            targets: this.image,
-            scale: scale,
-            alpha: opacity,
-            duration: this.delay,
-            ease: 'Sine.easeOut'
-        });
-    }
-}
+import { CellImage } from './CellImage';
 
 export class MainScene extends Phaser.Scene {
     constructor() {
@@ -41,7 +18,7 @@ export class MainScene extends Phaser.Scene {
     imgScale = 0
     onImgScale = 0.8;
     images: CellImage[][] = []
-    updateTime = 2000;
+    updateTime = 100;
     onClr = 0xff0000;
     offClr = 0x0000ff;
     create() {
