@@ -1,5 +1,6 @@
 import { gameExamples } from './2d/examples'
 import { IcoSphereBuilder } from 'babylonjs'
+import { ICell, log, updateCell } from './life'
 
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
@@ -17,12 +18,6 @@ Implementation:
     - If the life form friend count = 2 or 3, no change.
     - else die
 */
-
-export interface ICell {
-    previousValue: number,
-    value: number,
-    friends: number,
-}
 
 
 
@@ -63,9 +58,7 @@ export function setExample(grid: ICell[][], example: string){
     }   
 }
 
-function log(str: any){
-    //console.log(str);
-}
+
 
 function getNeighbors(grid: ICell[][], x: number, y: number){
     let n: ICell[] = []
@@ -146,25 +139,8 @@ export function nextGen(grid: ICell[][]){
     for(let i = 0;i < grid.length;i++){
         for(let j = 0;j < grid[i].length;j++){
             let currentState = grid[i][j];
-            let current = currentState.value;
-            let count = currentState.friends;
             let msg = `${i},${j}: `;
-
-            currentState.previousValue = currentState.value
-            //1. Any live cell with 2 or 3 live neighbors survives.
-            if(current == 1 && (count == 2 || count == 3)){
-                log(msg + "keeping alive...")
-            }
-            //2. Any dead cell with three live neighbors becomes a live cell.
-            else if(current == 0 && count == 3){
-                grid[i][j].value = 1;
-                log(msg + "came alive")
-            }
-            //3. All other live cells die in the next generation. Similarly, all other dead cells stay dead.
-            else if(current == 1){
-                grid[i][j].value = 0;
-                log(msg + "dead")
-            }
+            updateCell(currentState, msg, (n) => grid[i][j].value = n);
         }
     }
 
