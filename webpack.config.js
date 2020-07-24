@@ -1,7 +1,10 @@
 const path = require('path');
 //const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
-  entry: './src/index.ts',
+  entry: { 
+    index: './src/index.ts',
+    canvas: './src/canvasUI.ts'
+  },
   module: {
     rules: [
       {
@@ -15,6 +18,7 @@ module.exports = {
       },
     ],
   },
+  mode: 'production',
   node: {
     fs: 'empty'
   },
@@ -22,7 +26,7 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js', '.css' ],
   },
   output: {
-    filename: 'main.js',
+    filename: './js/[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {

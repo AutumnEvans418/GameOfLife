@@ -3,35 +3,12 @@
     <head>
     </head>
     <body>
-        <style>
-            html, body {
-                
-            }
-        
-            #renderCanvas {
-            }
-        </style>
-        <div style="width: 99vw;height: 90vh;overflow: scroll" id="container">
-            <canvas id="renderCanvas"></canvas>
+        <div class="container m-4">
+            <h1>Conway's Game of Life</h1>
+            <p>Below the title lies three examples of the game of life.  Feast your eyes on these beautiful creations.  Go ahead, brew that coffee and relax as the uncertainty arises in the survival of these creations, or there inevitable extinction.  Their lives are in your hands.  No worries, it's just a simulation.</p>
+            <a class="btn btn-primary" href="./canvas/canvas2d.html" role="button">Canvas 2D</a>
         </div>
-        <div>
-            <button id="start">Start</button>
-            <button id="pause">Pause</button>
+        <script src="js/index.js"></script>
 
-            <button id="reset">Reset</button>
-            <label>Zoom</label>
-            <input id="zoom" type="range" min="1" max="50" value="25">
-            <label>Size</label>
-            <input id="size" type="number" min="1" max="100" value="40">
-            <label>Delay</label>
-            <input id="delay" type="range" min="10" max="1000" value="100">
-            <label>Examples</label>
-            <select id="examples">
-                <option selected></option>
-            </select>
-            <label>Has Boundary</label>
-            <input type="checkbox" checked="true" id="boundary">
-        </div>
-        <script src="main.js"></script>
     </body>
 </html>

@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 import {max, settings, createGrid, nextGen, setExample, ICell, } from './life2d'
 import { gameExamples } from './2d/examples'
 // Get the canvas DOM element
