@@ -1,8 +1,8 @@
-import {max, settings, createGrid, nextGen, setExample, } from '../life2d'
+import { createGrid, nextGen, setExample, } from '../life2d'
 import { gameExamples } from '../2d/examples'
 import { Tilemaps } from 'phaser';
 import { CellImage } from './CellImage';
-import { ICell } from '../life';
+import { ICell, settings } from '../life';
 
 export class MainScene extends Phaser.Scene {
     constructor() {

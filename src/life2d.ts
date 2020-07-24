@@ -1,6 +1,6 @@
 import { gameExamples } from './2d/examples'
 import { IcoSphereBuilder } from 'babylonjs'
-import { ICell, log, updateCell } from './life'
+import { ICell, log, updateCell, settings } from './life'
 
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
@@ -19,25 +19,12 @@ Implementation:
     - else die
 */
 
-
-
-export let settings = {
-    space: 25,
-    width: 24,
-    size: 40,
-    hasBoundary: true,
-}
-
-export function max(){
-    return settings.size * settings.space
-}
-
 export function createGrid(){
     let grid: ICell[][] = []
     for(let i = 0;i < settings.size;i++){
         let row: ICell[] = []
         for(let j = 0;j < settings.size;j++){
-            row.push({ value: 0, friends: 0, previousValue: -1 });
+            row.push({ value: 0, friends: 0, previousValue: -1, x: i, y: j, z: -1 });
         }
         grid.push(row);
     }
@@ -49,12 +36,13 @@ export function setExample(grid: ICell[][], example: string){
     if(ex && grid.length > ex.data.length && grid[0].length > ex.data[0].length){
         let data = ex.data
 
-        for(let i = 0;i < data.length;i++){
-            for(let j = 0;j < data[i].length;j++){
-                grid[j][i].previousValue = -1
-                grid[j][i].value = data[i][j]
-            }
-        }
+        data.forEach((p,i) => {
+            p.forEach((v,j) => {
+                let cell = grid[j][i]
+                cell.previousValue = -1;
+                cell.value = v;
+            })
+        })
     }   
 }
 
@@ -111,37 +99,22 @@ function getNeighbors(grid: ICell[][], x: number, y: number){
     return n;
 }
 
-function getGridNeighbors(grid: ICell[][]){
-    //let result: teststate[][] = [];
-    for(let i = 0;i < grid.length;i++){
-
-        //let row: teststate[] = []
-        for(let j = 0;j < grid[i].length;j++){
-            let current = grid[i][j];
-            log('getting neighbors')
-            let n = getNeighbors(grid, i, j);
-            let count = n.filter(p => p.value == 1).length;
-            let msg = `${i},${j}: `;
-            log(msg + `count = ${count}`);
-            log(n)
-
-            grid[i][j].friends = count;
-            //row.push({state: current, nCount: count});
-        }
-
-        //result.push(row);
-    }
-    //return result;
+function loop<T>(grid: T[][], callback: (v: T) => void) {
+    grid.forEach((p) => {
+        p.forEach((v) => {
+            callback(v);
+        })
+    })
 }
 
 export function nextGen(grid: ICell[][]){
-    getGridNeighbors(grid);
-    for(let i = 0;i < grid.length;i++){
-        for(let j = 0;j < grid[i].length;j++){
-            let currentState = grid[i][j];
-            let msg = `${i},${j}: `;
-            updateCell(currentState, msg, (n) => grid[i][j].value = n);
-        }
-    }
-
+    loop(grid, (v) => {
+        let n = getNeighbors(grid, v.x, v.y);
+        let count = n.filter(p => p.value == 1).length;
+        v.friends = count;
+    })
+    loop(grid, (v) => {
+        let msg = `${v.x},${v.y}: `;
+        updateCell(v, msg);
+    })
 }
