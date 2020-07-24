@@ -19,6 +19,7 @@ Implementation:
 */
 
 export interface ICell {
+    previousValue: number,
     value: number,
     friends: number,
 }
@@ -41,7 +42,7 @@ export function createGrid(){
     for(let i = 0;i < settings.size;i++){
         let row: ICell[] = []
         for(let j = 0;j < settings.size;j++){
-            row.push({ value: 0, friends: 0 });
+            row.push({ value: 0, friends: 0, previousValue: -1 });
         }
         grid.push(row);
     }
@@ -55,6 +56,7 @@ export function setExample(grid: ICell[][], example: string){
 
         for(let i = 0;i < data.length;i++){
             for(let j = 0;j < data[i].length;j++){
+                grid[j][i].previousValue = -1
                 grid[j][i].value = data[i][j]
             }
         }
@@ -148,6 +150,7 @@ export function nextGen(grid: ICell[][]){
             let count = currentState.friends;
             let msg = `${i},${j}: `;
 
+            currentState.previousValue = currentState.value
             //1. Any live cell with 2 or 3 live neighbors survives.
             if(current == 1 && (count == 2 || count == 3)){
                 log(msg + "keeping alive...")

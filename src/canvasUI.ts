@@ -18,13 +18,19 @@ let context = canvas.getContext('2d');
 let grid = createGrid();
 
 
-function draw(grid: ICell[][]){
+function clear(){
     context.clearRect(0,0,canvas.width,canvas.height);
+}
+
+function draw(grid: ICell[][]){
     let space = settings.space;
     let width = settings.width;
     for(let i = 0;i < grid.length;i++){
         for(let j = 0;j < grid[i].length;j++){
             let current = grid[i][j];
+            if(current.value == current.previousValue){
+                continue
+            }
             if(current.value == 1){
                 context.fillStyle = `rgb(0,0,0)`;
             }
@@ -74,6 +80,7 @@ zoomSlider.onchange = e => {
     settings.width = settings.space * 0.9;
     console.log('change')
     resizeCanvas()
+    clear()
     draw(grid)
 }
 let size = document.getElementById('size') as HTMLInputElement;
