@@ -14,7 +14,7 @@ export class MainScene extends Phaser.Scene {
 
     }
     grid: ICell[][]
-    size = 50
+    size = 25
     imgScale = 0
     onImgScale = 0.8;
     images: CellImage[][] = []
