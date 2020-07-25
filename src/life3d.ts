@@ -1,5 +1,43 @@
-import { log, ICell, settings, updateCell } from './life'
+import { log, ICell, settings, updateCell, IGrid, IGridCell } from './life'
 
+export class Grid<T> implements IGrid<T> {
+    constructor(grid: T[][][]){
+        this.grid = grid;
+    }
+    convert<A>(con: (item: T) => A): IGrid<A> {
+        let items: A[][][] = []
+
+        this.grid.forEach(p => {
+            let row: A[][] = []
+            p.forEach(p => {
+                let height: A[] = []
+                p.forEach(p => {
+                    height.push(con(p))
+                })
+                row.push(height)
+            })
+            items.push(row)
+        })
+        return new Grid(items);
+    }
+    loop(callback: (v: T) => void): void {
+        loop(this.grid, callback);
+    }
+    get(x: number, y: number, z: number): T {
+        return this.grid[x][y][z];
+    }
+    grid: T[][][]
+    get width(){
+        return this.grid.length
+    }
+    get height(){
+        return this.grid[0].length
+    }
+    get depth(){
+        return this.grid[0][0].length;
+    }
+    
+}
 
 export function createGrid() {
     let grid: ICell[][][] = []
@@ -14,18 +52,18 @@ export function createGrid() {
         }
         grid.push(row);
     }
-    return grid;
+    return new Grid(grid);
 }
 
 
 
 
-function getNeighbors(grid: ICell[][][], x: number, y: number, z: number) {
+function getNeighbors(grid: IGridCell, x: number, y: number, z: number) {
     let n: ICell[] = []
 
-    let width = grid.length;
-    let height = grid[0].length;
-    let depth = grid[0][0].length;
+    let width = grid.width;
+    let height = grid.height;
+    let depth = grid.depth;
     for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
             for (let d = z - 1; d <= z + 1; d++) {
@@ -88,7 +126,7 @@ function getNeighbors(grid: ICell[][][], x: number, y: number, z: number) {
                     }
                 }
                 //log(`${i},${j}`);
-                n.push(grid[xR][yR][zR])
+                n.push(grid.get(xR,yR,zR))
                 log('called')
             }
         }
@@ -106,13 +144,13 @@ export function loop<T>(grid: T[][][], callback: (v: T) => void) {
     })
 }
 
-export function nextGen(grid: ICell[][][]) {
-    loop(grid, (v) => {
+export function nextGen(grid: IGridCell) {
+    grid.loop((v) => {
         let n = getNeighbors(grid, v.x, v.y, v.z);
         let count = n.filter(p => p.value == 1).length;
         v.friends = count;
     })
-    loop(grid, (v) => {
+    grid.loop((v) => {
         let msg = `${v.x},${v.y}: `;
         updateCell(v, msg, n => n >= 1 && n <= 9, n => n >= 4 && n <= 10);
     })

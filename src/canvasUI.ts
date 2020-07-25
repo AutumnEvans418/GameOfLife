@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { createGrid, nextGen, setExample, } from './life2d'
 import { gameExamples } from './2d/examples'
-import { ICell, max, settings, IGrid } from './life';
+import { ICell, max, settings, IGrid, IGridCell } from './life';
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 
@@ -23,7 +23,7 @@ function clear(){
     context.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function draw(grid: IGrid){
+function draw(grid: IGridCell){
     let space = settings.space;
     let width = settings.width;
     grid.loop(current => {

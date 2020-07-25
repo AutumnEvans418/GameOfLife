@@ -1,4 +1,4 @@
-import { settings, ICell } from '../life';
+import { settings, ICell, IGridCell } from '../life';
 
 
 export function Square(grid: ICell[][][]) {
@@ -16,10 +16,18 @@ export function Square(grid: ICell[][][]) {
     grid[halfSize + 3][halfSize + 3][halfSize + 3].value = 1;
 }
 
-export function Noodle(grid: ICell[][][]) {
+export function Noodle(grid: IGridCell) {
     let halfSize = Math.floor(settings.size / 2);
 
-    grid[halfSize][halfSize].forEach(p => p.value = 1);
+    grid.loop(p => {
+        if(p.x == halfSize && p.y == halfSize){
+            p.value = 1
+        }
+        else if(p.y == halfSize && p.z == halfSize){
+            p.value = 1;
+        }
+    });
 
-    grid.forEach(p => p[halfSize][halfSize].value = 1)
+
+    //grid.forEach(p => p[halfSize][halfSize].value = 1)
 }

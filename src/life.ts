@@ -9,12 +9,22 @@ export function max(){
     return settings.size * settings.space
 }
 
-export interface IGrid {
-    loop(callback: (v: ICell) => void): void;
+export interface IGrid<T> {
+    loop(callback: (v: T) => void): void;
     width: number;
     height: number;
     depth: number;
-    get(x: number, y: number, z: number): ICell;
+    get(x: number, y: number, z: number): T;
+    convert<A>(con: (item: T) => A): IGrid<A>
+}
+
+export interface IGridCell extends IGrid<ICell> {
+
+}
+
+export function createDimensions<T>(numOfDim:number, convert: (cell: ICell) => T)
+{
+
 }
 
 export interface ICell {

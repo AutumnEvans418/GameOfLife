@@ -1,5 +1,5 @@
 import { gameExamples } from './2d/examples'
-import { ICell, log, updateCell, settings, IGrid } from './life'
+import { ICell, log, updateCell, settings, IGrid, IGridCell } from './life'
 
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
@@ -30,17 +30,17 @@ export function createGrid(){
     return new Grid(grid);
 }
 
-class Grid implements IGrid {
-    constructor(grid: ICell[][]){
+export class Grid<T> implements IGrid<T> {
+    constructor(grid: T[][]){
         this.grid = grid;
     }
-    loop(callback: (v: ICell) => void): void {
+    loop(callback: (v: T) => void): void {
         loop(this.grid, callback);
     }
-    get(x: number, y: number, z: number): ICell {
+    get(x: number, y: number, z: number): T {
         return this.grid[x][y];
     }
-    grid: ICell[][]
+    grid: T[][]
     get width(){
         return this.grid.length
     }
@@ -50,10 +50,22 @@ class Grid implements IGrid {
     get depth(){
         return -1;
     }
+    convert<A>(con: (item: T) => A): IGrid<A> {
+        let items: A[][] = []
+
+        this.grid.forEach(p => {
+            let row: A[] = []
+            p.forEach(p => {
+                row.push(con(p))
+            })
+            items.push(row)
+        })
+        return new Grid(items);
+    }
 }
 
 
-function getNeighbors(grid: IGrid, x: number, y: number){
+function getNeighbors(grid: IGrid<ICell>, x: number, y: number){
     let n: ICell[] = []
 
     let width = grid.width;
@@ -117,7 +129,7 @@ function loop<T>(grid: T[][], callback: (v: T) => void) {
     })
 }
 
-export function nextGen(grid: IGrid){
+export function nextGen(grid: IGridCell){
     grid.loop((v) => {
         let n = getNeighbors(grid, v.x, v.y);
         let count = n.filter(p => p.value == 1).length;
@@ -129,7 +141,7 @@ export function nextGen(grid: IGrid){
     })
 }
 
-export function setExample(grid: IGrid, example: string){
+export function setExample(grid: IGridCell, example: string){
     let ex = gameExamples.find(p => p.name == example)
     if(ex && grid.width > ex.data.length && grid.height > ex.data[0].length){
         let data = ex.data

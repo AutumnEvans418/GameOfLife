@@ -2,15 +2,15 @@ import * as BABYLON from 'babylonjs';
 import { loop, nextGen } from '../life3d';
 import { Vector3, StandardMaterial } from 'babylonjs';
 import { Cell, ActiveState, DeadState } from './cell';
-import { ICell } from '../life';
+import { ICell, IGrid, IGridCell } from '../life';
 //import { scene, grid, size, spacing, half, update, time, delay } from './babylon';
 export class Grid3D {
-    spheres: Cell[][][] = [];
+    spheres: IGrid<Cell>;
     time = 0;
     delay = 50;
-    grid: ICell[][][]
+    grid: IGridCell
     scene: BABYLON.Scene;
-    constructor(scene: BABYLON.Scene, grid: ICell[][][], size: number, width: number, spacing: number) {
+    constructor(scene: BABYLON.Scene, grid: IGridCell, size: number, width: number, spacing: number) {
         this.grid = grid;
         this.scene = scene;
         
@@ -35,29 +35,23 @@ export class Grid3D {
         mesh.isVisible = false;
         mesh.material = mat;
         mesh.convertToUnIndexedMesh();
-        this.grid.forEach((p) => {
-            let row: Cell[][] = [];
-            p.forEach((p) => {
-                let depth: Cell[] = [];
-                p.forEach((p) => {
-                    let sphere = mesh.createInstance(`${p.x}${p.y}${p.z}`);
-                    sphere.position.x = p.x * spacing - half;
-                    sphere.position.y = p.y * spacing - half;
-                    sphere.position.z = p.z * spacing - half;
-                    sphere.scaling = Vector3.Zero();
-                    //sphere.material = mat;
 
-                    sphere.doNotSyncBoundingInfo = true;
-                    //sphere.convertToUnIndexedMesh()
+        this.spheres = this.grid.convert(p => {
+            let sphere = mesh.createInstance(`${p.x}${p.y}${p.z}`);
+            sphere.position.x = p.x * spacing - half;
+            sphere.position.y = p.y * spacing - half;
+            sphere.position.z = p.z * spacing - half;
+            sphere.scaling = Vector3.Zero();
+            //sphere.material = mat;
 
-                    let cell = new Cell(sphere);
-                    this.updateCell(cell, p);
-                    depth.push(cell);
-                });
-                row.push(depth);
-            });
-            this.spheres.push(row);
-        });
+            sphere.doNotSyncBoundingInfo = true;
+            //sphere.convertToUnIndexedMesh()
+
+            let cell = new Cell(sphere);
+            this.updateCell(cell, p);
+            return cell;
+        })
+        
     }
 
     updateCell(sphere: Cell, p: ICell) {
@@ -74,13 +68,13 @@ export class Grid3D {
     }
     update() {
         this.time++;
-        loop(this.spheres, p => {
+        this.spheres.loop(p => {
             p.state.update();
         });
         if (this.time % this.delay == 0) {
             nextGen(this.grid);
-            loop(this.grid, p => {
-                this.updateCell(this.spheres[p.x][p.y][p.z], p);
+            this.grid.loop(p => {
+                this.updateCell(this.spheres.get(p.x,p.y,p.z), p);
             });
         }
     }

@@ -2,7 +2,7 @@ import { createGrid, nextGen, setExample, } from '../life2d'
 import { gameExamples } from '../2d/examples'
 import { Tilemaps } from 'phaser';
 import { CellImage } from './CellImage';
-import { ICell, settings,IGrid } from '../life';
+import { ICell, settings,IGrid, IGridCell } from '../life';
 
 export class MainScene extends Phaser.Scene {
     constructor() {
@@ -14,7 +14,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('red', 'assets/particles/red.png');
 
     }
-    grid: IGrid
+    grid: IGridCell
     size = 25
     imgScale = 0
     onImgScale = 0.8;
