@@ -1,28 +1,39 @@
 import * as BABYLON from 'babylonjs';
 
-import { createGrid } from '../life3d'
-import { settings } from '../life';
+import { createGrid, Grid } from '../life3d'
+import { settings, ICell } from '../life';
 import { Square, Noodle } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';
 import * as dat from 'dat.gui'
+import { GroundBuilder } from 'babylonjs';
 
 settings.size = 19;
 settings.hasBoundary = false;
 
-let gui = new dat.GUI();
 
-gui.add(settings,'size');
-gui.add(settings,'hasBoundary');
 
-let grid = createGrid();
+let grid: Grid<ICell>;
 let spacing = 10;
 let size = 10;
 
 export let width = size * settings.size;
 //Square(grid);
-Noodle(grid);
+
+let actions = {
+    reset(){
+        grid = createGrid();
+        Noodle(grid);
+        if(grid3d){
+            grid3d.grid = grid;
+            grid3d.updateCells();
+        }
+        console.log('reseted!')
+    }
+}
+
+actions.reset();
 
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
@@ -37,6 +48,19 @@ grid3d.delay = 200;
 let rotateCam = new RotatingCamera(scene, canvas, width);
 
 let lights = new RotatingLights(scene, width);
+
+
+
+
+
+let gui = new dat.GUI();
+
+gui.add(settings,'size');
+gui.add(settings,'hasBoundary');
+gui.add(lights,'speed',0,0.3,0.01);
+gui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
+gui.add(grid3d,'delay',10,200,1)
+gui.add(actions,'reset');
 
 engine.runRenderLoop(function () {
     lights.update()

@@ -73,9 +73,13 @@ export class Grid3D {
         });
         if (this.time % this.delay == 0) {
             nextGen(this.grid);
-            this.grid.loop(p => {
-                this.updateCell(this.spheres.get(p.x,p.y,p.z), p);
-            });
+            this.updateCells()
         }
+    }
+
+    updateCells(){
+        this.grid.loop(p => {
+            this.updateCell(this.spheres.get(p.x,p.y,p.z), p);
+        });
     }
 }

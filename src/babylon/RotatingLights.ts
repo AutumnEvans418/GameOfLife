@@ -6,6 +6,7 @@ export class RotatingLights {
     light2: LightSphere;
     alpha = 0;
     width: number;
+    speed = 0.01;
     constructor(scene: BABYLON.Scene, width: number) {
         this.width = width;
         // Create a basic light, aiming 0, 1, 0 - meaning, to the sky
@@ -22,6 +23,6 @@ export class RotatingLights {
         this.light1.position = new BABYLON.Vector3(this.width * 2 * Math.sin(this.alpha), 0,-this.width * Math.cos(this.alpha));
         this.light2.position = new BABYLON.Vector3(this.width * 2 * Math.cos(this.alpha), 0, this.width * Math.sin(this.alpha));
 
-        this.alpha += 0.01;
+        this.alpha += this.speed;
     }
 }
