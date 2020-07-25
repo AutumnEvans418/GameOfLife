@@ -12,7 +12,10 @@ import { GroundBuilder } from 'babylonjs';
 settings.size = 19;
 settings.hasBoundary = false;
 
-
+interface IExample {
+    name: string
+    start(): void;
+}
 
 let grid: Grid<ICell>;
 let spacing = 10;
@@ -21,10 +24,21 @@ let size = 10;
 export let width = size * settings.size;
 //Square(grid);
 
+let examples = [
+    'noodle',
+    'square'
+]
+
 let actions = {
+    example: examples[0],
     reset(){
         grid = createGrid();
-        Noodle(grid);
+        if(this.example == 'noodle'){
+            Noodle(grid);
+        }
+        if(this.example == 'square'){
+            Square(grid);
+        }
         if(grid3d){
             grid3d.grid = grid;
             grid3d.updateCells();
@@ -61,6 +75,9 @@ gui.add(lights,'speed',0,0.3,0.01);
 gui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
 gui.add(grid3d,'delay',10,200,1)
 gui.add(actions,'reset');
+gui.add(actions, 'example', examples).onChange(p => {
+    actions.reset();
+})
 
 engine.runRenderLoop(function () {
     lights.update()
