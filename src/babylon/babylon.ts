@@ -6,9 +6,15 @@ import { Square, Noodle } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';
+import * as dat from 'dat.gui'
 
 settings.size = 19;
 settings.hasBoundary = false;
+
+let gui = new dat.GUI();
+
+gui.add(settings,'size');
+gui.add(settings,'hasBoundary');
 
 let grid = createGrid();
 let spacing = 10;

@@ -1,8 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import { createGrid, nextGen, setExample, } from './life2d'
-import { gameExamples } from './2d/examples'
-import { ICell, max, settings, IGrid, IGridCell } from './life';
+import { createGrid, nextGen, setExample, } from '../life2d'
+import { gameExamples } from './examples'
+import { ICell, max, settings, IGrid, IGridCell } from '../life';
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 

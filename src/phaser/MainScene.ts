@@ -2,7 +2,7 @@ import { createGrid, nextGen, setExample, } from '../life2d'
 import { gameExamples } from '../2d/examples'
 import { Tilemaps } from 'phaser';
 import { CellImage } from './CellImage';
-import { ICell, settings,IGrid, IGridCell } from '../life';
+import { ICell, settings, IGrid, IGridCell } from '../life';
 
 export class MainScene extends Phaser.Scene {
     constructor() {
@@ -18,7 +18,7 @@ export class MainScene extends Phaser.Scene {
     size = 25
     imgScale = 0
     onImgScale = 0.8;
-    images: CellImage[][] = []
+    images: IGrid<CellImage>
     updateTime = 100;
     onClr = 0xff0000;
     offClr = 0x0000ff;
@@ -32,53 +32,46 @@ export class MainScene extends Phaser.Scene {
         // this.add.image(0, 0, 'sky')
         //     .setOrigin(0,0)
         //     .setSize(this.scale.width, this.scale.height);
-        for(let i = 0;i < this.grid.width;i++){
-            let imagesRow: CellImage[] = []
-            for(let j = 0;j< this.grid.height;j++){
-                let current = this.grid.get(i,j,0);
 
-                let img = this.add.image(padding + i*this.size,padding + j*this.size,'red').setScale(this.imgScale)
-                
-                let cell = new CellImage()
-                cell.image = img;
-                cell.scene = this;
-                cell.delay = this.updateTime
+        this.images = this.grid.convert(current => {
+            let img = this.add.image(padding + current.x * this.size, padding + current.y * this.size, 'red').setScale(this.imgScale)
 
-                if(current.value == 1){
-                    imagesRow.push(cell);
-                    cell.setState(true);
-                }
-                else{
-                    imagesRow.push(cell);
-                    cell.setState(false);
-                }
+            let cell = new CellImage()
+            cell.image = img;
+            cell.scene = this;
+            cell.delay = this.updateTime
+
+            if (current.value == 1) {
+                cell.setState(true);
             }
+            else {
+                cell.setState(false);
+            }
+            return cell;
+        })
 
-            this.images.push(imagesRow);
-        }
-        this.time.addEvent({repeat: -1, delay: this.updateTime, callbackScope: this, callback: () => {
-            nextGen(this.grid)
-            this.updateGrid()
-        }})
+        this.time.addEvent({
+            repeat: -1, delay: this.updateTime, callbackScope: this, callback: () => {
+                nextGen(this.grid)
+                this.updateGrid()
+            }
+        })
     }
 
-    updateGrid(){
-        for(let i = 0;i < this.grid.width;i++){
-            for(let j = 0;j< this.grid.height;j++){
-                let current = this.grid.get(i,j,0);
+    updateGrid() {
 
-                let currentImg = this.images[i][j];
-                if(current.previousValue == current.value){
-                    continue;
+        this.grid.loop(current => {
+            let currentImg = this.images.get(current.x, current.y, 0);
+            if (current.previousValue != current.value) {
+
+                if (current.value == 1) {
+                    currentImg.setState(true)
                 }
-                
-                if(current.value == 1){
-                   currentImg.setState(true)
-                }
-                else{
+                else {
                     currentImg.setState(false)
                 }
             }
-        }
+
+        })
     }
 }

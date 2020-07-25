@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: { 
     index: './src/index.ts',
-    canvas: './src/canvasUI.ts',
+    canvas: './src/2d/canvasUI.ts',
     phaser: './src/phaser/phaser.ts',
     babylon: './src/babylon/babylon.ts'
   },
