@@ -25,7 +25,7 @@ let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 let engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
 // Create a basic BJS Scene object
 let scene = new BABYLON.Scene(engine);
-
+scene.clearColor = new BABYLON.Color4(0,0,0,1);
 let grid3d = new Grid3D(scene, grid, size, width, spacing);
 
 let rotateCam = new RotatingCamera(scene, canvas, width);
@@ -42,5 +42,5 @@ engine.runRenderLoop(function () {
 window.addEventListener('resize', function () {
     engine.resize();
 });
-
+scene.blockMaterialDirtyMechanism = true;
 scene.debugLayer.show()

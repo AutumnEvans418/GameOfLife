@@ -7,7 +7,7 @@ import { ICell } from '../life';
 export class Grid3D {
     spheres: Cell[][][] = [];
     time = 0;
-    delay = 200;
+    delay = 50;
     grid: ICell[][][]
     scene: BABYLON.Scene;
     constructor(scene: BABYLON.Scene, grid: ICell[][][], size: number, width: number, spacing: number) {
@@ -23,23 +23,33 @@ export class Grid3D {
         let myMaterial = new BABYLON.StandardMaterial("on", this.scene);
         myMaterial.diffuseTexture = new BABYLON.Texture('../images/cobblestone.jpg', this.scene);
         myMaterial.alpha = 1;
+        myMaterial.freeze();
         return myMaterial;
     }
 
     createGrid(size: number, width: number, spacing: number, mat: StandardMaterial){
         let half = width / 2;
 
+        //This should reduce draw calls
+        let mesh = BABYLON.Mesh.CreateBox(`root`, size, this.scene);
+        mesh.isVisible = false;
+        mesh.material = mat;
+
         this.grid.forEach((p) => {
             let row: Cell[][] = [];
             p.forEach((p) => {
                 let depth: Cell[] = [];
                 p.forEach((p) => {
-                    let sphere = BABYLON.Mesh.CreateBox(`sphere${p.x}${p.y}${p.z}`, size, this.scene);
+                    let sphere = mesh.createInstance(`${p.x}${p.y}${p.z}`);
                     sphere.position.x = p.x * spacing - half;
                     sphere.position.y = p.y * spacing - half;
                     sphere.position.z = p.z * spacing - half;
                     sphere.scaling = Vector3.Zero();
-                    sphere.material = mat;
+                    //sphere.material = mat;
+
+                    sphere.doNotSyncBoundingInfo = true;
+                    //sphere.convertToUnIndexedMesh()
+
                     let cell = new Cell(sphere);
                     this.updateCell(cell, p);
                     depth.push(cell);
@@ -51,6 +61,10 @@ export class Grid3D {
     }
 
     updateCell(sphere: Cell, p: ICell) {
+        if(p.value == p.previousValue){
+            return;
+        }
+
         if (p.value == 1) {
             sphere.state = new ActiveState(sphere.mesh);
         }

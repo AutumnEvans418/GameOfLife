@@ -7,48 +7,59 @@ function MoveTo(from: number,to:number, speed: number){
 }
 
 function MoveToVector3(from: Vector3, to: Vector3, speed:number){
+    if(Math.abs(from.x - to.x) < 0.02)
+    {
+        return false;
+    }
     from.x = MoveTo(from.x, to.x, speed);
     from.y = MoveTo(from.y, to.y, speed);
     from.z = MoveTo(from.z, to.z, speed);
+    return true;
 }
 
-export class ActiveState implements IState {
-    mesh: BABYLON.Mesh;
-    scale = new BABYLON.Vector3(1,1,1)
-    constructor(mesh: BABYLON.Mesh){
+let speed = 0.1;
+
+class State implements IState {
+    mesh: BABYLON.InstancedMesh;
+    scale: BABYLON.Vector3
+    done: boolean;
+    constructor(mesh: BABYLON.InstancedMesh, scale: BABYLON.Vector3){
         this.mesh = mesh;
+        this.scale = scale;
+        mesh.unfreezeWorldMatrix();
+        mesh.setEnabled(true);
     }
     update(){
-        let mat = this.mesh.material as StandardMaterial
-        let speed = 0.05;
-        let clr = mat.emissiveColor;
-
-        //clr.r = MoveTo(clr.r, 1, speed);
-        //clr.g = MoveTo(clr.g, 0, speed);
-        //clr.b = MoveTo(clr.b, 0, speed);
-        MoveToVector3(this.mesh.scaling, this.scale, speed);
-
-        //mat.alpha = MoveTo(mat.alpha, 0.5, speed);
+        if(this.done){
+            return;
+        }
+        if(!MoveToVector3(this.mesh.scaling, this.scale, speed)){
+            if(!this.mesh.isWorldMatrixFrozen){
+                this.mesh.freezeWorldMatrix();
+                this.complete();
+            }
+        }
+    }
+    complete(){
+        this.done = true;
+    }
+}
+export class ActiveState extends State {
+    constructor(mesh: BABYLON.InstancedMesh){
+        super(mesh, new BABYLON.Vector3(1,1,1))
+        this.mesh.isVisible = true;
     }
 }
 
-export class DeadState implements IState {
-    mesh: BABYLON.Mesh;
-    scale = new BABYLON.Vector3(0,0,0)
-    constructor(mesh: BABYLON.Mesh){
-        this.mesh = mesh;
+export class DeadState extends State {
+    constructor(mesh: BABYLON.InstancedMesh){
+        super(mesh, Vector3.Zero());
     }
-    update(){
-        let mat = this.mesh.material as StandardMaterial
-        let speed = 0.05;
-        let clr = mat.emissiveColor;
 
-        //clr.r = MoveTo(clr.r, 1, speed);
-        //clr.g = MoveTo(clr.g, 1, speed);
-        //clr.b = MoveTo(clr.b, 1, speed);
-
-        MoveToVector3(this.mesh.scaling, this.scale, speed);
-        //mat.alpha = MoveTo(mat.alpha, 0, speed);
+    complete(){
+        super.complete();
+        this.mesh.setEnabled(false);
+        this.mesh.isVisible = false;
     }
 }
 
@@ -57,9 +68,9 @@ interface IState {
 }
 
 export class Cell {
-    mesh: BABYLON.Mesh;
+    mesh: BABYLON.InstancedMesh;
     state: IState;
-    constructor(mesh: BABYLON.Mesh){
+    constructor(mesh: BABYLON.InstancedMesh){
         this.mesh = mesh;
     }
 }

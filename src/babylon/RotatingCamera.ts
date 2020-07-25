@@ -11,7 +11,7 @@ export class RotatingCamera {
         let quarter = BABYLON.Tools.ToRadians(45)
 
         let camera = new BABYLON.ArcRotateCamera("camera1", quarter, quarter, width * 3, BABYLON.Vector3.Zero(), scene);
-
+        
         // Target the camera to scene origin
         camera.setTarget(BABYLON.Vector3.Zero());
         //test
