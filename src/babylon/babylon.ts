@@ -2,17 +2,18 @@ import * as BABYLON from 'babylonjs';
 
 import { createGrid, loop, nextGen } from '../life3d'
 import { settings, ICell } from '../life';
-import { Mesh, Vector3, Color3, PointLight, StandardMaterial } from 'babylonjs';
+import { Vector3, Color3 } from 'babylonjs';
 import { Cell, ActiveState, DeadState } from './cell'
-import { SetInitialGrid } from './SetInitialGrid';
+import { Square, Noodle } from './SetInitialGrid';
 import { Scene } from 'phaser';
-settings.size = 10;
+import { LightSphere } from './LightSphere';
+settings.size = 15;
 settings.hasBoundary = false;
 let grid = createGrid();
 
 
-SetInitialGrid(grid);
-
+//Square(grid);
+Noodle(grid);
 
 // Get the canvas DOM element
 var canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
@@ -20,40 +21,6 @@ var canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 
 // Load the 3D engine
 var engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
-
-class LightSphere {
-    light: PointLight
-    sphere: Mesh
-
-    constructor(color: Color3, pos: Vector3, scene: BABYLON.Scene){
-        
-        this.sphere = BABYLON.Mesh.CreateSphere('test', 16, 10, scene);
-
-        this.sphere.material = new StandardMaterial('light', scene)
-
-        this.light = new PointLight('light', Vector3.Zero(), scene);
-
-        this.position = pos;
-        this.color = color;
-    }
-
-    get position(){
-        return this.light.position
-    }
-    set position(v){
-        this.light.position = v;
-        this.sphere.position = v;
-    }
-
-    set color(v: Color3){
-        this.light.diffuse = v;
-        this.light.specular = v;
-        let mat = this.sphere.material as StandardMaterial
-        mat.diffuseColor = Color3.Black()
-        mat.specularColor = Color3.Black()
-        mat.emissiveColor = v;
-    }
-}
 
 // CreateScene function that creates and return the scene
 // Create a basic BJS Scene object
