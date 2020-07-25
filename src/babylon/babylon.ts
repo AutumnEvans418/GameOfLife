@@ -7,7 +7,7 @@ import { Cell, ActiveState, DeadState } from './cell'
 import { SetInitialGrid } from './SetInitialGrid';
 import { Scene } from 'phaser';
 settings.size = 10;
-
+settings.hasBoundary = false;
 let grid = createGrid();
 
 
@@ -113,7 +113,7 @@ var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0),
 let lightPos = Vector3.Zero();
 //let lightPos2 = new Vector3(-width*4,-width*4,-width*4)
 
-let light1 = new LightSphere(new Color3(1,0,0), lightPos, scene);
+let light1 = new LightSphere(new Color3(1,1,0), lightPos, scene);
 
 let light2 = new LightSphere(new Color3(0,1,0), lightPos, scene);
 
