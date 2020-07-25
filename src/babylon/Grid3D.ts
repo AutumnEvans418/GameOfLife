@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs';
 import { loop, nextGen } from '../life3d';
-import { Vector3 } from 'babylonjs';
+import { Vector3, StandardMaterial } from 'babylonjs';
 import { Cell, ActiveState, DeadState } from './cell';
 import { ICell } from '../life';
 //import { scene, grid, size, spacing, half, update, time, delay } from './babylon';
@@ -9,24 +9,37 @@ export class Grid3D {
     time = 0;
     delay = 200;
     grid: ICell[][][]
+    scene: BABYLON.Scene;
     constructor(scene: BABYLON.Scene, grid: ICell[][][], size: number, width: number, spacing: number) {
         this.grid = grid;
-        let half = width / 2;
-        let myMaterial = new BABYLON.StandardMaterial("on", scene);
-        myMaterial.diffuseTexture = new BABYLON.Texture('../images/cobblestone.jpg', scene);
-        myMaterial.alpha = 1;
+        this.scene = scene;
+        
+        let mat = this.createMaterial()
+        
+        this.createGrid(size, width, spacing, mat)
+    }
 
-        grid.forEach((p, i) => {
+    createMaterial(){
+        let myMaterial = new BABYLON.StandardMaterial("on", this.scene);
+        myMaterial.diffuseTexture = new BABYLON.Texture('../images/cobblestone.jpg', this.scene);
+        myMaterial.alpha = 1;
+        return myMaterial;
+    }
+
+    createGrid(size: number, width: number, spacing: number, mat: StandardMaterial){
+        let half = width / 2;
+
+        this.grid.forEach((p) => {
             let row: Cell[][] = [];
-            p.forEach((p, j) => {
+            p.forEach((p) => {
                 let depth: Cell[] = [];
-                p.forEach((p, d) => {
-                    let sphere = BABYLON.Mesh.CreateBox(`sphere${p.x}${p.y}${p.z}`, size, scene);
+                p.forEach((p) => {
+                    let sphere = BABYLON.Mesh.CreateBox(`sphere${p.x}${p.y}${p.z}`, size, this.scene);
                     sphere.position.x = p.x * spacing - half;
                     sphere.position.y = p.y * spacing - half;
                     sphere.position.z = p.z * spacing - half;
                     sphere.scaling = Vector3.Zero();
-                    sphere.material = myMaterial;
+                    sphere.material = mat;
                     let cell = new Cell(sphere);
                     this.updateCell(cell, p);
                     depth.push(cell);
@@ -35,8 +48,8 @@ export class Grid3D {
             });
             this.spheres.push(row);
         });
-
     }
+
     updateCell(sphere: Cell, p: ICell) {
         if (p.value == 1) {
             sphere.state = new ActiveState(sphere.mesh);
