@@ -7,7 +7,7 @@ function MoveTo(from: number,to:number, speed: number){
 }
 
 function MoveToVector3(from: Vector3, to: Vector3, speed:number){
-    if(Math.abs(from.x - to.x) < 0.02)
+    if(Math.abs(from.x - to.x) < 0.005)
     {
         return false;
     }

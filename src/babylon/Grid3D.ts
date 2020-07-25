@@ -34,7 +34,7 @@ export class Grid3D {
         let mesh = BABYLON.Mesh.CreateBox(`root`, size, this.scene);
         mesh.isVisible = false;
         mesh.material = mat;
-
+        mesh.convertToUnIndexedMesh();
         this.grid.forEach((p) => {
             let row: Cell[][] = [];
             p.forEach((p) => {
