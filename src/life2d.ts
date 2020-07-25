@@ -1,6 +1,6 @@
 import { gameExamples } from './2d/examples'
 import { IcoSphereBuilder } from 'babylonjs'
-import { ICell, log, updateCell, settings } from './life'
+import { ICell, log, updateCell, settings, IGrid } from './life'
 
 /*
 1. Any live cell with 2 or 3 live neighbors survives.
@@ -28,17 +28,35 @@ export function createGrid(){
         }
         grid.push(row);
     }
-    return grid;
+    return new Grid();
+}
+
+class Grid implements IGrid {
+    get(x: number, y: number, z: number): ICell {
+        return this.grid[x][y];
+    }
+    grid: ICell[][]
+    get width(){
+        return this.grid.length
+    }
+    get height(){
+        return this.grid[0].length
+    }
+    get depth(){
+        return -1;
+    }
+    loop(): void {
+        throw new Error("Method not implemented.")
+    }
+
 }
 
 
-
-
-function getNeighbors(grid: ICell[][], x: number, y: number){
+function getNeighbors(grid: IGrid, x: number, y: number){
     let n: ICell[] = []
 
-    let width = grid.length;
-    let height = grid[0].length;
+    let width = grid.width;
+    let height = grid.height;
 
     for(let i = x-1;i <= x+1;i++){
         for(let j = y-1;j <= y+1;j++){
@@ -83,7 +101,7 @@ function getNeighbors(grid: ICell[][], x: number, y: number){
                 }
             }
             //log(`${i},${j}`);
-            n.push(grid[xR][yR])
+            n.push(grid.get(xR,yR,0))
             log('called')
         }
     }
@@ -98,26 +116,26 @@ function loop<T>(grid: T[][], callback: (v: T) => void) {
     })
 }
 
-export function nextGen(grid: ICell[][]){
-    loop(grid, (v) => {
+export function nextGen(grid: IGrid){
+    grid.loop((v) => {
         let n = getNeighbors(grid, v.x, v.y);
         let count = n.filter(p => p.value == 1).length;
         v.friends = count;
     })
-    loop(grid, (v) => {
+    grid.loop((v) => {
         let msg = `${v.x},${v.y}: `;
         updateCell(v, msg, n => n == 2 || n == 3, n => n == 3);
     })
 }
 
-export function setExample(grid: ICell[][], example: string){
+export function setExample(grid: IGrid, example: string){
     let ex = gameExamples.find(p => p.name == example)
-    if(ex && grid.length > ex.data.length && grid[0].length > ex.data[0].length){
+    if(ex && grid.width > ex.data.length && grid.height > ex.data[0].length){
         let data = ex.data
 
         data.forEach((p,i) => {
             p.forEach((v,j) => {
-                let cell = grid[j][i]
+                let cell = grid.get(j,i,0);
                 cell.previousValue = -1;
                 cell.value = v;
             })

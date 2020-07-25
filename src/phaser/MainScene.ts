@@ -2,7 +2,7 @@ import { createGrid, nextGen, setExample, } from '../life2d'
 import { gameExamples } from '../2d/examples'
 import { Tilemaps } from 'phaser';
 import { CellImage } from './CellImage';
-import { ICell, settings } from '../life';
+import { ICell, settings,IGrid } from '../life';
 
 export class MainScene extends Phaser.Scene {
     constructor() {
@@ -14,7 +14,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image('red', 'assets/particles/red.png');
 
     }
-    grid: ICell[][]
+    grid: IGrid
     size = 25
     imgScale = 0
     onImgScale = 0.8;
@@ -32,10 +32,10 @@ export class MainScene extends Phaser.Scene {
         // this.add.image(0, 0, 'sky')
         //     .setOrigin(0,0)
         //     .setSize(this.scale.width, this.scale.height);
-        for(let i = 0;i < this.grid.length;i++){
+        for(let i = 0;i < this.grid.width;i++){
             let imagesRow: CellImage[] = []
-            for(let j = 0;j< this.grid[i].length;j++){
-                let current = this.grid[i][j];
+            for(let j = 0;j< this.grid.height;j++){
+                let current = this.grid.get(i,j,0);
 
                 let img = this.add.image(padding + i*this.size,padding + j*this.size,'red').setScale(this.imgScale)
                 
@@ -63,9 +63,9 @@ export class MainScene extends Phaser.Scene {
     }
 
     updateGrid(){
-        for(let i = 0;i < this.grid.length;i++){
-            for(let j = 0;j< this.grid[i].length;j++){
-                let current = this.grid[i][j];
+        for(let i = 0;i < this.grid.width;i++){
+            for(let j = 0;j< this.grid.height;j++){
+                let current = this.grid.get(i,j,0);
 
                 let currentImg = this.images[i][j];
                 if(current.previousValue == current.value){

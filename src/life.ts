@@ -9,6 +9,14 @@ export function max(){
     return settings.size * settings.space
 }
 
+export interface IGrid {
+    loop(callback: (v: ICell) => void): void;
+    width: number;
+    height: number;
+    depth: number;
+    get(x: number, y: number, z: number): ICell;
+}
+
 export interface ICell {
     previousValue: number,
     value: number,
