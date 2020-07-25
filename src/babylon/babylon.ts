@@ -16,6 +16,10 @@ grid[0][0][1].value = 1;
 grid[0][1][1].value = 1;
 grid[1][0][1].value = 1;
 grid[1][1][1].value = 1;
+grid[2][2][2].value = 1;
+grid[3][3][3].value = 1;
+
+
 // Get the canvas DOM element
 var canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 
@@ -110,7 +114,7 @@ let time = 0;
 engine.runRenderLoop(function () {
     time++;
 
-    if (time % 100 == 0) {
+    if (time % 10 == 0) {
         nextGen(grid)
         loop(grid, p => {
             update(spheres[p.x][p.y][p.z], p, onChange, myMaterial)

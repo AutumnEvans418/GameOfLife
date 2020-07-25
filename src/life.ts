@@ -23,17 +23,17 @@ export function log(str: any){
     //console.log(str);
 }
 
-export function updateCell(currentState: ICell, msg: string){
+export function updateCell(currentState: ICell, msg: string, stayAlive: (n: number) => boolean, becomeAlive: (n: number) => boolean){
     let current = currentState.value;
     let count = currentState.friends;
 
     currentState.previousValue = currentState.value
     //1. Any live cell with 2 or 3 live neighbors survives.
-    if(current == 1 && (count == 2 || count == 3)){
+    if(current == 1 && stayAlive(count)){ //(count == 2 || count == 3)){
         log(msg + "keeping alive...")
     }
     //2. Any dead cell with three live neighbors becomes a live cell.
-    else if(current == 0 && count == 3){
+    else if(current == 0 && becomeAlive(count)) {//count == 3){
         //grid[i][j].value = 1;
         //update(1)
         currentState.value = 1;

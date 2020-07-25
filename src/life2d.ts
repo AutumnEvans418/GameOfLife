@@ -106,7 +106,7 @@ export function nextGen(grid: ICell[][]){
     })
     loop(grid, (v) => {
         let msg = `${v.x},${v.y}: `;
-        updateCell(v, msg);
+        updateCell(v, msg, n => n == 2 || n == 3, n => n == 3);
     })
 }
 
