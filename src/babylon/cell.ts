@@ -1,55 +1,54 @@
 import * as BABYLON from 'babylonjs'
-import { StandardMaterial } from 'babylonjs';
-class State implements IState {
-    duration: number;
-    currentColor: BABYLON.Color3;
-    color: BABYLON.Color3;
-    increment: BABYLON.Color3;
-    constructor(mesh: BABYLON.Mesh, duration:number, color: BABYLON.Color3){
-        this.color = color;
-        if(mesh.material instanceof BABYLON.StandardMaterial){
-            this.currentColor = mesh.material.emissiveColor;
-        }
+import { StandardMaterial, Color3, Vector3 } from 'babylonjs';
 
-        this.duration = duration;
+function MoveTo(from: number,to:number, speed: number){
+    let t = to - from;
+    return from + t * speed
+}
 
-        let r = (this.currentColor.r - this.color.r)/duration;
-        let g = (this.currentColor.g - this.color.g)/duration;
-        let b = (this.currentColor.b - this.color.b)/duration;
-        this.increment = new BABYLON.Color3(r,g,b);
+function MoveToVector3(from: Vector3, to: Vector3, speed:number){
+    from.x = MoveTo(from.x, to.x, speed);
+    from.y = MoveTo(from.y, to.y, speed);
+    from.z = MoveTo(from.z, to.z, speed);
+}
+
+export class ActiveState implements IState {
+    mesh: BABYLON.Mesh;
+    scale = new BABYLON.Vector3(1,1,1)
+    constructor(mesh: BABYLON.Mesh){
+        this.mesh = mesh;
     }
+    update(){
+        let mat = this.mesh.material as StandardMaterial
+        let speed = 0.05;
+        let clr = mat.emissiveColor;
 
-    update(): void {
-        if(this.currentColor.r != this.color.r){
-            this.currentColor.add(this.increment);
-        }
+        clr.r = MoveTo(clr.r, 1, speed);
+        clr.g = MoveTo(clr.g, 0, speed);
+        clr.b = MoveTo(clr.b, 0, speed);
+        MoveToVector3(this.mesh.scaling, this.scale, speed);
+
+        //mat.alpha = MoveTo(mat.alpha, 0.5, speed);
     }
 }
 
-export class ActiveState extends State {
+export class DeadState implements IState {
+    mesh: BABYLON.Mesh;
+    scale = new BABYLON.Vector3(0,0,0)
     constructor(mesh: BABYLON.Mesh){
-        super(mesh, 100, new BABYLON.Color3(1,0,0))
-
-        let mat = mesh.material as StandardMaterial
-        mat.emissiveColor = this.color;
+        this.mesh = mesh;
     }
-
     update(){
+        let mat = this.mesh.material as StandardMaterial
+        let speed = 0.05;
+        let clr = mat.emissiveColor;
 
-    }
-}
+        clr.r = MoveTo(clr.r, 1, speed);
+        clr.g = MoveTo(clr.g, 1, speed);
+        clr.b = MoveTo(clr.b, 1, speed);
 
-
-export class DeadState extends State {
-    constructor(mesh: BABYLON.Mesh){
-        super(mesh, 100, new BABYLON.Color3(1,1,1))
-
-        let mat = mesh.material as StandardMaterial
-        mat.emissiveColor = this.color;
-    }
-
-    update(){
-
+        MoveToVector3(this.mesh.scaling, this.scale, speed);
+        //mat.alpha = MoveTo(mat.alpha, 0, speed);
     }
 }
 
