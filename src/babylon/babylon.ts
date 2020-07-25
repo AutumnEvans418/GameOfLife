@@ -36,7 +36,7 @@ var scene = new BABYLON.Scene(engine);
 var quarter = BABYLON.Tools.ToRadians(45)
 
 let spacing = 10;
-let size = 9;
+let size = 10;
 
 let width = size * settings.size;
 let half = width / 2;
@@ -58,11 +58,11 @@ grid.forEach((p, i) => {
             sphere.position.z = p.z * spacing - half;
             let myMaterial = new BABYLON.StandardMaterial("on", scene);
 
-            myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
-            myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-            myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-            myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
-
+            //myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 1);
+            //myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+            //myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+            //myMaterial.ambientColor = new BABYLON.Color3(0.23, 0.98, 0.53);
+            myMaterial.diffuseTexture = new BABYLON.Texture('../images/cobblestone.jpg', scene)
             myMaterial.alpha = 1;
             sphere.material = myMaterial;
             let cell = new Cell(sphere)
@@ -89,7 +89,7 @@ camera.attachControl(canvas, false);
 var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
 
 let time = 0;
-let delay = 100;
+let delay = 200;
 engine.runRenderLoop(function () {
     time++;
 
@@ -122,4 +122,4 @@ function update(sphere: Cell, p: ICell) {
         //sphere.material.emissiveColor = new BABYLON.Color3(1, 1, 1);
     }
 }
-scene.debugLayer.show()
+//scene.debugLayer.show()

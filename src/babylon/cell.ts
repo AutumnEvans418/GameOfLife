@@ -23,9 +23,9 @@ export class ActiveState implements IState {
         let speed = 0.05;
         let clr = mat.emissiveColor;
 
-        clr.r = MoveTo(clr.r, 1, speed);
-        clr.g = MoveTo(clr.g, 0, speed);
-        clr.b = MoveTo(clr.b, 0, speed);
+        //clr.r = MoveTo(clr.r, 1, speed);
+        //clr.g = MoveTo(clr.g, 0, speed);
+        //clr.b = MoveTo(clr.b, 0, speed);
         MoveToVector3(this.mesh.scaling, this.scale, speed);
 
         //mat.alpha = MoveTo(mat.alpha, 0.5, speed);
@@ -43,9 +43,9 @@ export class DeadState implements IState {
         let speed = 0.05;
         let clr = mat.emissiveColor;
 
-        clr.r = MoveTo(clr.r, 1, speed);
-        clr.g = MoveTo(clr.g, 1, speed);
-        clr.b = MoveTo(clr.b, 1, speed);
+        //clr.r = MoveTo(clr.r, 1, speed);
+        //clr.g = MoveTo(clr.g, 1, speed);
+        //clr.b = MoveTo(clr.b, 1, speed);
 
         MoveToVector3(this.mesh.scaling, this.scale, speed);
         //mat.alpha = MoveTo(mat.alpha, 0, speed);

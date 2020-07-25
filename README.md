@@ -6,3 +6,12 @@ This is a collection of implementations of Conway's game of life that is impleme
 - Phaserjs (2D)
 - Babylonjs (3D)
 
+## Babylon
+![](/assets/cellatomata4.gif)
+
+## Phaser
+![](/assets/cellatomata3.gif)
+
+## Canvas
+![](assets/cellatomata2.gif)
+![](assets/cellatomata.gif)
