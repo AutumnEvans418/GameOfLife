@@ -43,4 +43,4 @@ window.addEventListener('resize', function () {
     engine.resize();
 });
 scene.blockMaterialDirtyMechanism = true;
-scene.debugLayer.show()
+//scene.debugLayer.show()

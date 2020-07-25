@@ -1,5 +1,5 @@
 import * as BABYLON from 'babylonjs'
-import { StandardMaterial, Color3, Vector3 } from 'babylonjs';
+import { Vector3 } from 'babylonjs';
 
 function MoveTo(from: number,to:number, speed: number){
     let t = to - from;
@@ -17,12 +17,12 @@ function MoveToVector3(from: Vector3, to: Vector3, speed:number){
     return true;
 }
 
-let speed = 0.1;
 
 class State implements IState {
     mesh: BABYLON.InstancedMesh;
     scale: BABYLON.Vector3
     done: boolean;
+    speed = 0.1;
     constructor(mesh: BABYLON.InstancedMesh, scale: BABYLON.Vector3){
         this.mesh = mesh;
         this.scale = scale;
@@ -33,7 +33,7 @@ class State implements IState {
         if(this.done){
             return;
         }
-        if(!MoveToVector3(this.mesh.scaling, this.scale, speed)){
+        if(!MoveToVector3(this.mesh.scaling, this.scale, this.speed)){
             if(!this.mesh.isWorldMatrixFrozen){
                 this.mesh.freezeWorldMatrix();
                 this.complete();
@@ -65,6 +65,7 @@ export class DeadState extends State {
 
 interface IState {
     update(): void;
+    speed: number;
 }
 
 export class Cell {

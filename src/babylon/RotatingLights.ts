@@ -16,6 +16,7 @@ export class RotatingLights {
         this.light1 = new LightSphere(new Color3(1, 1, 0), lightPos, scene);
 
         this.light2 = new LightSphere(new Color3(0, 1, 0), lightPos, scene);
+
     }
     update() {
         this.light1.position = new BABYLON.Vector3(this.width * 2 * Math.sin(this.alpha), 0,-this.width * Math.cos(this.alpha));

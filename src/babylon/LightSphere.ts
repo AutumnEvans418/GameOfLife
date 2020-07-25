@@ -11,7 +11,7 @@ export class LightSphere {
         this.sphere.material = new StandardMaterial('light', scene);
 
         this.light = new PointLight('light', Vector3.Zero(), scene);
-
+        this.light.intensity = 0.2
         this.position = pos;
         this.color = color;
     }

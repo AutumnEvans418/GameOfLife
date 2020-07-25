@@ -64,14 +64,13 @@ export class Grid3D {
         if(p.value == p.previousValue){
             return;
         }
-
         if (p.value == 1) {
             sphere.state = new ActiveState(sphere.mesh);
         }
         else {
-    
             sphere.state = new DeadState(sphere.mesh)
         }
+        //sphere.state.speed;
     }
     update() {
         this.time++;
