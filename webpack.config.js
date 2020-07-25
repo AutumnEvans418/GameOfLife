@@ -4,7 +4,8 @@ module.exports = {
   entry: { 
     index: './src/index.ts',
     canvas: './src/canvasUI.ts',
-    phaser: './src/phaser/phaser.ts'
+    phaser: './src/phaser/phaser.ts',
+    babylon: './src/babylon/babylon.ts'
   },
   module: {
     rules: [

@@ -1,50 +1,119 @@
-import * as BABYLON from 'babylonjs';
-// Get the canvas DOM element
-var canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
+import { log, ICell, settings, updateCell } from './life'
 
 
-// Load the 3D engine
-var engine = new BABYLON.Engine(canvas, true, {preserveDrawingBuffer: true, stencil: true});
-// CreateScene function that creates and return the scene
-var createScene = function(){
-    // Create a basic BJS Scene object
-    var scene = new BABYLON.Scene(engine);
-    // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-    //var camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
-    var sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene, false, BABYLON.Mesh.FRONTSIDE);
-    let cube = BABYLON.Mesh.CreateBox('box1', 2, scene);
-    cube.position.y = 1;
-    cube.position.x = 2;
-    var quarter = BABYLON.Tools.ToRadians(45)
-    var camera = new BABYLON.ArcRotateCamera("camera1", quarter, quarter, 10, sphere.position, scene);
-    sphere.position.y = 1;
-
-    // Target the camera to scene origin
-    camera.setTarget(BABYLON.Vector3.Zero());
-    //test
-    camera.keysUp.push(87);
-    camera.keysDown.push(83);
-    camera.keysLeft.push(65);
-    camera.keysRight.push(68);
-
-    // Attach the camera to the canvas
-    camera.attachControl(canvas, false);
-    // Create a basic light, aiming 0, 1, 0 - meaning, to the sky
-    var light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
-    // Create a built-in "sphere" shape; its constructor takes 6 params: name, segment, diameter, scene, updatable, sideOrientation
-    // Move the sphere upward 1/2 of its height
-    // Create a built-in "ground" shape; its constructor takes 6 params : name, width, height, subdivision, scene, updatable
-    var ground = BABYLON.Mesh.CreateGround('ground1', 6, 6, 2, scene, false);
-    // Return the created scene
-    return scene;
+export function createGrid() {
+    let grid: ICell[][][] = []
+    for (let i = 0; i < settings.size; i++) {
+        let row: ICell[][] = []
+        for (let j = 0; j < settings.size; j++) {
+            let depth: ICell[] = []
+            for (let z = 0; z < settings.size; z++) {
+                depth.push({ value: 0, friends: 0, previousValue: -1, x: i, y: j, z: z });
+            }
+            row.push(depth);
+        }
+        grid.push(row);
+    }
+    return grid;
 }
-// call the createScene function
-var scene = createScene();
-// run the render loop
-engine.runRenderLoop(function(){
-    scene.render();
-});
-// the canvas/window resize event handler
-window.addEventListener('resize', function(){
-    engine.resize();
-});
+
+
+
+
+function getNeighbors(grid: ICell[][][], x: number, y: number, z: number) {
+    let n: ICell[] = []
+
+    let width = grid.length;
+    let height = grid[0].length;
+    let depth = grid[0][0].length;
+    for (let i = x - 1; i <= x + 1; i++) {
+        for (let j = y - 1; j <= y + 1; j++) {
+            for (let d = z - 1; d <= z + 1; d++) {
+
+                let xR = i;
+                let yR = j;
+                let zR = d;
+                // Is it the same cell?
+                if (i == x && j == y && d == z) {
+                    continue;
+                }
+                if(d < 0) {
+                    if(settings.hasBoundary){
+                        continue;
+                    }
+                    else {
+                        zR = depth - 1;
+                    }
+                }
+                else if(d == depth){
+                    if(settings.hasBoundary){
+                        continue;
+                    }
+                    else {
+                        zR = 0;
+                    }
+                }
+
+                if (i < 0) {
+                    if (settings.hasBoundary) {
+                        continue;
+                    }
+                    else {
+                        xR = width - 1;
+                    }
+                }
+                else if (i == width) {
+                    if (settings.hasBoundary) {
+                        continue;
+                    }
+                    else {
+                        xR = 0;
+                    }
+                }
+
+                if (height == j) {
+                    if (settings.hasBoundary) {
+                        continue;
+                    }
+                    else {
+                        yR = 0;
+                    }
+                }
+                else if (j < 0) {
+                    if (settings.hasBoundary) {
+                        continue
+                    }
+                    else {
+                        yR = height - 1;
+                    }
+                }
+                //log(`${i},${j}`);
+                n.push(grid[xR][yR][zR])
+                log('called')
+            }
+        }
+    }
+    return n;
+}
+
+export function loop<T>(grid: T[][][], callback: (v: T) => void) {
+    grid.forEach((p) => {
+        p.forEach((j) => {
+            j.forEach(v => {
+                callback(v);
+            })
+        })
+    })
+}
+
+export function nextGen(grid: ICell[][][]) {
+    loop(grid, (v) => {
+        let n = getNeighbors(grid, v.x, v.y, v.z);
+        let count = n.filter(p => p.value == 1).length;
+        v.friends = count;
+    })
+    loop(grid, (v) => {
+        let msg = `${v.x},${v.y}: `;
+        updateCell(v, msg);
+    })
+}
