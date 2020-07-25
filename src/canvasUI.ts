@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { createGrid, nextGen, setExample, } from './life2d'
 import { gameExamples } from './2d/examples'
-import { ICell, max, settings } from './life';
+import { ICell, max, settings, IGrid } from './life';
 // Get the canvas DOM element
 let canvas = document.getElementById('renderCanvas') as HTMLCanvasElement;
 
@@ -23,15 +23,13 @@ function clear(){
     context.clearRect(0,0,canvas.width,canvas.height);
 }
 
-function draw(grid: ICell[][]){
+function draw(grid: IGrid){
     let space = settings.space;
     let width = settings.width;
-    for(let i = 0;i < grid.length;i++){
-        for(let j = 0;j < grid[i].length;j++){
-            let current = grid[i][j];
-            if(current.value == current.previousValue){
-                continue
-            }
+    grid.loop(current => {
+        if(current.value != current.previousValue){
+            let i = current.x;
+            let j = current.y;
             if(current.value == 1){
                 context.fillStyle = `rgb(0,0,0)`;
             }
@@ -40,7 +38,7 @@ function draw(grid: ICell[][]){
             }
             context.fillRect(i*space,j*space,width,width);
         }
-    }
+    })
 }
 
 let start = document.getElementById('start');
@@ -138,12 +136,12 @@ canvas.onclick = e => {
     const rect = canvas.getBoundingClientRect();
     let x = Math.floor((e.clientX - rect.left) / settings.space);
     let y = Math.floor((e.clientY - rect.top) / settings.space);
-    let current = grid[x][y];
+    let current = grid.get(x,y,0);
     let result = 0;
     if(current.value == 0){
         result = 1;
     }
-    grid[x][y].value = result;
+    grid.get(x,y,0).value = result;
     draw(grid)
 }
 draw(grid);

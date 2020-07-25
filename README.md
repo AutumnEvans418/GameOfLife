@@ -7,6 +7,7 @@ This is a collection of implementations of Conway's game of life that is impleme
 - Babylonjs (3D)
 
 ## Babylon
+![](/assets/Screenshot_2.jpg)
 ![](/assets/cellatomata5.gif)
 ![](/assets/cellatomata4.gif)
 

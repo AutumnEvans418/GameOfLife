@@ -1,5 +1,4 @@
 import { gameExamples } from './2d/examples'
-import { IcoSphereBuilder } from 'babylonjs'
 import { ICell, log, updateCell, settings, IGrid } from './life'
 
 /*
@@ -28,10 +27,16 @@ export function createGrid(){
         }
         grid.push(row);
     }
-    return new Grid();
+    return new Grid(grid);
 }
 
 class Grid implements IGrid {
+    constructor(grid: ICell[][]){
+        this.grid = grid;
+    }
+    loop(callback: (v: ICell) => void): void {
+        loop(this.grid, callback);
+    }
     get(x: number, y: number, z: number): ICell {
         return this.grid[x][y];
     }
@@ -45,10 +50,6 @@ class Grid implements IGrid {
     get depth(){
         return -1;
     }
-    loop(): void {
-        throw new Error("Method not implemented.")
-    }
-
 }
 
 
