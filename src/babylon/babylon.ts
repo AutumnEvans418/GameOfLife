@@ -69,7 +69,7 @@ let lights = new RotatingLights(scene, width);
 
 let gui = new dat.GUI();
 
-gui.add(settings,'size');
+//gui.add(settings,'size');
 gui.add(settings,'hasBoundary');
 gui.add(lights,'speed',0,0.3,0.01);
 gui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
