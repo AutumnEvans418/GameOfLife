@@ -1,6 +1,15 @@
 import { settings, ICell, IGridCell } from '../life';
 
 
+export function Random(grid: IGridCell){
+    grid.loop(p => {
+        let ran = Math.random();
+        if(ran > 0.95){
+            p.value = 1;
+        }
+    })
+}
+
 export function Square(grid: IGridCell) {
     let halfSize = Math.floor(settings.size / 2);
 

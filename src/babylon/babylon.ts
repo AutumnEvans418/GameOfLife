@@ -1,8 +1,8 @@
 import * as BABYLON from 'babylonjs';
 
-import { createGrid, Grid, settings3d } from '../life3d'
+import { createGrid, Grid, settings3d, regular, aggressive } from '../life3d'
 import { settings, ICell } from '../life';
-import { Square, Noodle } from './SetInitialGrid';
+import { Square, Noodle, Random } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';
@@ -26,11 +26,13 @@ export let width = size * settings.size;
 
 let examples = [
     'noodle',
-    'square'
+    'square',
+    'random'
 ]
 
-let actions = {
-    example: examples[0],
+class Actions{
+    example = examples[0]
+    setup = 'regular'
     reset(){
         grid = createGrid();
         if(this.example == 'noodle'){
@@ -39,13 +41,25 @@ let actions = {
         if(this.example == 'square'){
             Square(grid);
         }
+        if(this.example == 'random'){
+            Random(grid);
+        }
         if(grid3d){
             grid3d.grid = grid;
             grid3d.updateCells();
         }
         console.log('reseted!')
     }
+    randomize(){
+        settings3d.becomeAliveMin = Math.random() * 26;
+        settings3d.becomeAliveMax = Math.random() * 26;
+        settings3d.stayAliveMax = Math.random() * 26;
+        settings3d.stayAliveMin = Math.random() * 26;
+    }
+
 }
+
+let actions = new Actions();
 
 actions.reset();
 
@@ -70,19 +84,42 @@ let lights = new RotatingLights(scene, width);
 let gui = new dat.GUI();
 
 //gui.add(settings,'size');
-gui.add(settings,'hasBoundary');
-gui.add(lights,'speed',0,0.3,0.01);
-gui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
-gui.add(grid3d,'delay',10,200,1)
-gui.add(actions, 'example', examples).onChange(p => {
+let setups = [
+    'regular',
+    'aggressive'
+]
+
+let simulationGui = gui.addFolder('Simulation');
+simulationGui.open();
+
+simulationGui.add(lights,'speed',0,0.3,0.01);
+simulationGui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
+simulationGui.add(grid3d,'delay',10,200,1)
+simulationGui.add(actions, 'example', examples).onChange(p => {
     actions.reset();
 })
-gui.add(actions,'reset');
-gui.add(settings3d,'becomeAliveMin', 0, 26,1);
-gui.add(settings3d,'becomeAliveMax', 0, 26,1);
-gui.add(settings3d,'stayAliveMin', 0, 26,1);
-gui.add(settings3d,'stayAliveMax', 0, 26,1);
+simulationGui.add(actions,'reset');
 
+
+let parameters = gui.addFolder('Parameters');
+parameters.add(settings,'hasBoundary');
+parameters.add(settings3d,'becomeAliveMin', 0, 26,1);
+parameters.add(settings3d,'becomeAliveMax', 0, 26,1);
+parameters.add(settings3d,'stayAliveMin', 0, 26,1);
+parameters.add(settings3d,'stayAliveMax', 0, 26,1);
+parameters.add(actions,'randomize').onChange(p => {
+    parameters.updateDisplay();
+    actions.reset();
+})
+parameters.add(actions,'setup', setups).onChange(p => {
+    if(actions.setup == 'regular'){
+        settings3d.change(regular)
+    }
+    if(actions.setup == 'aggressive'){
+        settings3d.change(aggressive);
+    }
+    parameters.updateDisplay();
+})
 
 engine.runRenderLoop(function () {
     lights.update()

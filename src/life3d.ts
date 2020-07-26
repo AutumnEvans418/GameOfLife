@@ -146,12 +146,29 @@ export function loop<T>(grid: T[][][], callback: (v: T) => void) {
     })
 }
 
-export let settings3d = {
-    stayAliveMin: 1,
-    stayAliveMax: 9,
-    becomeAliveMin: 4,
-    becomeAliveMax: 10
+export class Settings3D {
+    stayAliveMin= 4
+    stayAliveMax= 8
+    becomeAliveMin= 4
+    becomeAliveMax= 10
+
+    change(setting: Settings3D){
+        this.stayAliveMin = setting.stayAliveMin;
+        this.stayAliveMax = setting.stayAliveMax;
+        this.becomeAliveMin = setting.becomeAliveMin;
+        this.becomeAliveMax = setting.becomeAliveMax;
+    }
 }
+
+export let aggressive = new Settings3D();
+
+export let regular = new Settings3D();
+regular.becomeAliveMin = 4;
+regular.becomeAliveMax = 4;
+regular.stayAliveMax = 5;
+regular.stayAliveMin = 4;
+
+export let settings3d = aggressive;
 
 export function nextGen(grid: IGridCell) {
     grid.loop((v) => {
