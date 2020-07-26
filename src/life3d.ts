@@ -165,10 +165,11 @@ export let aggressive = new Settings3D();
 export let regular = new Settings3D();
 regular.becomeAliveMin = 4;
 regular.becomeAliveMax = 4;
-regular.stayAliveMax = 5;
-regular.stayAliveMin = 4;
+regular.stayAliveMin = 5;
+regular.stayAliveMax = 6;
 
-export let settings3d = aggressive;
+
+export let settings3d = regular;
 
 export function nextGen(grid: IGridCell) {
     grid.loop((v) => {

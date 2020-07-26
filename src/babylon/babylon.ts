@@ -2,7 +2,7 @@ import * as BABYLON from 'babylonjs';
 
 import { createGrid, Grid, settings3d, regular, aggressive } from '../life3d'
 import { settings, ICell } from '../life';
-import { Square, Noodle, Random } from './SetInitialGrid';
+import { Square, Noodle, Random, GetExample, examples } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';
@@ -10,7 +10,7 @@ import * as dat from 'dat.gui'
 import { GroundBuilder } from 'babylonjs';
 
 settings.size = 19;
-settings.hasBoundary = false;
+settings.hasBoundary = true;
 
 interface IExample {
     name: string
@@ -24,26 +24,17 @@ let size = 10;
 export let width = size * settings.size;
 //Square(grid);
 
-let examples = [
-    'noodle',
-    'square',
-    'random'
+let setups = [
+    'regular',
+    'aggressive'
 ]
 
 class Actions{
     example = examples[0]
-    setup = 'regular'
+    setup = setups[0]
     reset(){
         grid = createGrid();
-        if(this.example == 'noodle'){
-            Noodle(grid);
-        }
-        if(this.example == 'square'){
-            Square(grid);
-        }
-        if(this.example == 'random'){
-            Random(grid);
-        }
+        GetExample(this.example, grid);
         if(grid3d){
             grid3d.grid = grid;
             grid3d.updateCells();
@@ -84,10 +75,7 @@ let lights = new RotatingLights(scene, width);
 let gui = new dat.GUI();
 
 //gui.add(settings,'size');
-let setups = [
-    'regular',
-    'aggressive'
-]
+
 
 let simulationGui = gui.addFolder('Simulation');
 simulationGui.open();
