@@ -41,19 +41,26 @@ export class Grid<T> implements IGrid<T> {
     
 }
 
-export function createGrid() {
-    let grid: ICell[][][] = []
-    for (let i = 0; i < settings.size; i++) {
-        let row: ICell[][] = []
-        for (let j = 0; j < settings.size; j++) {
-            let depth: ICell[] = []
-            for (let z = 0; z < settings.size; z++) {
-                depth.push({ value: 0, friends: 0, previousValue: -1, x: i, y: j, z: z });
+export function create3DArray<T>(size: number, add: (i:number,j:number,z:number) => T){
+    let grid: T[][][] = []
+    for (let i = 0; i < size; i++) {
+        let row: T[][] = []
+        for (let j = 0; j < size; j++) {
+            let depth: T[] = []
+            for (let z = 0; z < size; z++) {
+                depth.push(add(i,j,z));
             }
             row.push(depth);
         }
         grid.push(row);
     }
+    return grid;
+}
+
+export function createGrid() {
+    let grid = create3DArray(settings.size, (i,j,z) => { 
+        return {value: 0, friends: 0, previousValue: -1, x: i, y: j, z: z} 
+    });
     return new Grid(grid);
 }
 
