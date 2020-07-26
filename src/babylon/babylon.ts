@@ -7,7 +7,7 @@ import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';
 import * as dat from 'dat.gui'
-import { GroundBuilder } from 'babylonjs';
+import { GroundBuilder, Color3 } from 'babylonjs';
 
 settings.size = 19;
 settings.hasBoundary = false;
@@ -63,7 +63,7 @@ let engine = new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, ste
 let scene = new BABYLON.Scene(engine);
 scene.clearColor = new BABYLON.Color4(0,0,0,1);
 let grid3d = new Grid3D(scene, grid, size, width, spacing);
-grid3d.delay = 20;
+grid3d.delay = 150;
 let rotateCam = new RotatingCamera(scene, canvas, width);
 
 let lights = new RotatingLights(scene, width);
@@ -108,6 +108,19 @@ parameters.add(actions,'setup', setups).onChange(p => {
     }
     parameters.updateDisplay();
 })
+
+let material = new BABYLON.StandardMaterial('wire', scene);
+//material.wireframe = true;
+
+material.diffuseColor = Color3.White();
+material.alpha = 0.15
+
+let containerCube = BABYLON.Mesh.CreateBox('container', width + size, scene)
+
+containerCube.position.x = 1;
+containerCube.position.y = 1;
+containerCube.material = material;
+
 
 engine.runRenderLoop(function () {
     lights.update()

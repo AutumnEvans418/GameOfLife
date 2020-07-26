@@ -7,7 +7,7 @@ let oscillatorCube = 'oscillator cube'
 let noodle = 'noodle'
 
 export let examples = [
-    'glider',
+    //'glider',
     'bunny',
     'cube',
     oscillatorStair,
@@ -21,9 +21,9 @@ export function GetExample(example: string, grid: IGridCell) {
     if (example == oscillatorStair) {
         Stair(grid)
     }
-    if (example == 'glider') {
-        Glider(grid)
-    }
+    // if (example == 'glider') {
+    //     Glider(grid)
+    // }
     if (example == 'bunny') {
         Bunny(grid)
     }
@@ -59,36 +59,36 @@ function Stair(grid: IGridCell) {
     render(data,grid)
 }
 
-function Glider(grid: IGridCell) {
-     let data1 = [
-         [
-             [0,1,0],
-             [0,1,0],
-             [0,0,0]
-         ],
-         [
-             [1,1,1],
-             [1,0,0],
-             [1,1,0]
-         ],
-         [
-             [1,0,0],
-             [0,0,1],
-             [0,0,0]
-         ]
-     ]
-    let data = create3DArray(3, p => {
-        let v = 0;
-        let r = Math.random()
-        if (r > .5) {
-            v = 1;
-        }
-        return v;
-    })
+// function Glider(grid: IGridCell) {
+//      let data1 = [
+//          [
+//              [0,1,0],
+//              [0,1,0],
+//              [0,0,0]
+//          ],
+//          [
+//              [1,1,1],
+//              [1,0,0],
+//              [1,1,0]
+//          ],
+//          [
+//              [1,0,0],
+//              [0,0,1],
+//              [0,0,0]
+//          ]
+//      ]
+//     let data = create3DArray(4, p => {
+//         let v = 0;
+//         let r = Math.random()
+//         if (r > .5) {
+//             v = 1;
+//         }
+//         return v;
+//     })
 
-    console.log(data);
-    render(data, grid);
-}
+//     console.log(data);
+//     render(data, grid);
+// }
 function Bunny(grid: IGridCell) {
     let data = [
         [
