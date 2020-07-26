@@ -1,5 +1,7 @@
 import { log, ICell, settings, updateCell, IGrid, IGridCell } from './life'
 
+
+
 export class Grid<T> implements IGrid<T> {
     constructor(grid: T[][][]){
         this.grid = grid;
@@ -144,6 +146,13 @@ export function loop<T>(grid: T[][][], callback: (v: T) => void) {
     })
 }
 
+export let settings3d = {
+    stayAliveMin: 1,
+    stayAliveMax: 9,
+    becomeAliveMin: 4,
+    becomeAliveMax: 10
+}
+
 export function nextGen(grid: IGridCell) {
     grid.loop((v) => {
         let n = getNeighbors(grid, v.x, v.y, v.z);
@@ -152,6 +161,10 @@ export function nextGen(grid: IGridCell) {
     })
     grid.loop((v) => {
         let msg = `${v.x},${v.y}: `;
-        updateCell(v, msg, n => n >= 1 && n <= 9, n => n >= 4 && n <= 10);
+        updateCell(
+            v,
+            msg,
+            n => n >= settings3d.stayAliveMin && n <= settings3d.stayAliveMax, 
+            n => n >= settings3d.becomeAliveMin && n <= settings3d.becomeAliveMax);
     })
 }

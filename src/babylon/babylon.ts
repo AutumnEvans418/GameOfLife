@@ -1,6 +1,6 @@
 import * as BABYLON from 'babylonjs';
 
-import { createGrid, Grid } from '../life3d'
+import { createGrid, Grid, settings3d } from '../life3d'
 import { settings, ICell } from '../life';
 import { Square, Noodle } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
@@ -74,10 +74,15 @@ gui.add(settings,'hasBoundary');
 gui.add(lights,'speed',0,0.3,0.01);
 gui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
 gui.add(grid3d,'delay',10,200,1)
-gui.add(actions,'reset');
 gui.add(actions, 'example', examples).onChange(p => {
     actions.reset();
 })
+gui.add(actions,'reset');
+gui.add(settings3d,'becomeAliveMin', 0, 26,1);
+gui.add(settings3d,'becomeAliveMax', 0, 26,1);
+gui.add(settings3d,'stayAliveMin', 0, 26,1);
+gui.add(settings3d,'stayAliveMax', 0, 26,1);
+
 
 engine.runRenderLoop(function () {
     lights.update()
