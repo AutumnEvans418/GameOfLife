@@ -2,7 +2,7 @@ import * as BABYLON from 'babylonjs';
 
 import { createGrid, Grid, settings3d, regular, aggressive } from '../life3d'
 import { settings, ICell } from '../life';
-import { Square, Noodle, Random, GetExample, examples } from './SetInitialGrid';
+import { GetExample, examples } from './SetInitialGrid';
 import { RotatingCamera } from './RotatingCamera';
 import { RotatingLights } from './RotatingLights';
 import { Grid3D } from './Grid3D';

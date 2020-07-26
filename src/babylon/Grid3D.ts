@@ -72,6 +72,7 @@ export class Grid3D {
             p.state.update();
         });
         if (this.time % this.delay == 0) {
+            this.time = 0;
             nextGen(this.grid);
             this.updateCells()
         }
