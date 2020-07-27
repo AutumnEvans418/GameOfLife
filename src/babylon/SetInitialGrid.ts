@@ -8,8 +8,8 @@ let noodle = 'noodle'
 
 export let examples = [
     //'glider',
-    'bunny',
     'cube',
+    'bunny',
     oscillatorStair,
     oscillator,
     oscillatorCube,
