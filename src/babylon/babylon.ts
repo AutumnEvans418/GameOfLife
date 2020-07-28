@@ -69,17 +69,38 @@ let rotateCam = new RotatingCamera(scene, canvas, width);
 let lights = new RotatingLights(scene, width);
 
 
+class AddCell{
+    x = 0
+    y = 0
+    z = 0
+    alive = true;
 
+    Add(){
+        let v = 0;
+        if(this.alive){
+            v = 1;
+        }
+        grid.get(this.x,this.y,this.z).value = v;
+        grid3d.updateCells();
+    }
+}
 
 
 let gui = new dat.GUI();
-
+let addCell = new AddCell()
 //gui.add(settings,'size');
+let addTo = gui.addFolder('Add Cell');
+addTo.add(addCell,'x');
+addTo.add(addCell,'y');
+addTo.add(addCell,'z');
+addTo.add(addCell,'alive');
+addTo.add(addCell,'Add');
 
 
 let simulationGui = gui.addFolder('Simulation');
 simulationGui.open();
 
+simulationGui.add(grid3d,'pause');
 simulationGui.add(lights,'speed',0,0.3,0.01);
 simulationGui.add(rotateCam,'cameraSpeed',0,0.05,0.005)
 simulationGui.add(grid3d,'delay',10,200,1)

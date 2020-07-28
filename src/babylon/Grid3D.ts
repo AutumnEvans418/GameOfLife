@@ -10,6 +10,7 @@ export class Grid3D {
     delay = 50;
     grid: IGridCell
     scene: BABYLON.Scene;
+    pause = false;
     constructor(scene: BABYLON.Scene, grid: IGridCell, size: number, width: number, spacing: number) {
         this.grid = grid;
         this.scene = scene;
@@ -67,15 +68,20 @@ export class Grid3D {
         //sphere.state.speed;
     }
     update() {
-        this.time++;
         this.spheres.loop(p => {
             p.state.update();
         });
-        if (this.time % this.delay == 0) {
-            this.time = 0;
-            nextGen(this.grid);
-            this.updateCells()
+
+        if(!this.pause){
+            this.time++;
+
+            if (this.time % this.delay == 0) {
+                this.time = 0;
+                nextGen(this.grid);
+                this.updateCells()
+            }
         }
+       
     }
 
     updateCells(){
